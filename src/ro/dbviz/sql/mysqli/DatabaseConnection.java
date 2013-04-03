@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import ro.dbviz.sql.IDatabaseConnection;
+import ro.dbviz.sql.Table;
+import ro.dbviz.sql.types.TableType;
+import ro.dbviz.xml.Tree;
+import ro.dbviz.xml.TreeNode;
 
 public class DatabaseConnection implements IDatabaseConnection {
 	Connection conn = null;
@@ -39,9 +43,14 @@ public class DatabaseConnection implements IDatabaseConnection {
 		return conn;
 	}
 	
-	public void getSchema() throws Exception {
+	public Tree getSchema() throws Exception {
+		return getSchema(database);
+	}
+	
+	public Tree getSchema(String database) throws Exception {
 		connect();
-		String query = "SELECT table_name, table_type, engine "
+		Tree tree = new Tree(new TreeNode(database));
+		String query = "SELECT table_name, table_type "
 				+ " FROM information_schema.tables"
 				+ " WHERE table_schema = '" + database + "' "
 				+ " ORDER BY table_name";
@@ -51,11 +60,12 @@ public class DatabaseConnection implements IDatabaseConnection {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				System.out.println(rs.getString(1) +
-						" - " + rs.getString(2) +
-						" - " + rs.getString(3));
+				Table newTable = new Table(rs.getString(1), TableType.getTableType(rs.getString(2)));
+				tree.addNode(new TreeNode(newTable));
 			}
+			
 			closeConnection();
+			return tree;
 			// do not catch exceptions
 		} finally {
 			if (rs != null) {
@@ -82,6 +92,5 @@ public class DatabaseConnection implements IDatabaseConnection {
 				}
 			}
 		}
-		
 	}
 }

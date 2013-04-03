@@ -3,7 +3,7 @@ package ro.dbviz.sql.types;
 public enum TableType {
 	BASE_TABLE("BASE TABLE", 0),
 	VIEW("VIEW", 1),
-	TEMPORARY("TEMPORARY", 1),
+	TEMPORARY("LOCAL TEMPORARY", 1),
 	UNKNOWN("UNKNOWN", 2);
 
 	/*-- From MYSQL documentation:
