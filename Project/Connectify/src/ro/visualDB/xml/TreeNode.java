@@ -5,19 +5,21 @@ import java.util.ArrayList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import ro.visualDB.logging.AppLogger;
+
 /** TreeNode class containing
  * the Value of the current node
  * and an ArrayList of his Children,
  * or an empty ArrayList 
  * if there are none.
  **/
-public class TreeNode {
+public class TreeNode implements XMLElement {
 	private Object value;
 	private ArrayList<TreeNode> children;
 	
 	public TreeNode() {
 		this.value = null;
-//		this.children = new ArrayList<>();
+		this.children = new ArrayList<TreeNode>();
 	}
 	
 	public TreeNode(Object value){
@@ -84,39 +86,21 @@ public class TreeNode {
 	public String toString() {
 		return value.toString();
 	}
-	
-	/**
-	 * Gets the XML Element representation of this treeNode
-	 * The representation contains the node value and 
-	 * its children appended to him. 
-	 * @param doc
-	 * @return
-	 * @throws Exception
-	 */
+
 	public Element getDomElement(Document doc) throws Exception {
-		 Element el = doc.createElement(value.toString());
-		 for (TreeNode t : getChildren()) {
-			 domElementAddNode(doc, el, t);
+		Element el;
+		 if (value instanceof XMLElement) {
+			 el = ((XMLElement) value).getDomElement(doc);
+			 for (TreeNode t : getChildren()) {
+				 el.appendChild(t.getDomElement(doc));
+			 }
+		 } else {
+			 AppLogger.getLogger().error("Tree node Value not instance of XMLElement");
+			 el = doc.createElement(value.toString());
+			 for (TreeNode t : getChildren()) {
+				 el.appendChild(t.getDomElement(doc));
+			 }
 		 }
 		 return el;
-	}
-	
-	/**
-	 * Add an element to a root element.
-	 * It also adds it's children as his child elements
-	 * recursively.
-	 * @param doc
-	 * @param rootElement
-	 * @param tn
-	 * @throws Exception
-	 */
-	public void domElementAddNode(Document doc, Element rootElement, TreeNode tn) throws Exception {
-		  Element elem = doc.createElement(tn.getValue().toString());
-		  rootElement.appendChild(elem);
-		  elem.normalize();
-		  
-		  for (TreeNode t : tn.getChildren()) {
-			  domElementAddNode(doc, elem, t);
-		  }
 	}
 }

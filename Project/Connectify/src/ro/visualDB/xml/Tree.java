@@ -5,10 +5,13 @@ import org.w3c.dom.Element;
 
 /**
  * Root Tree Node class
+ * Convenience class -> does not do 
+ * anything special, has a root TreeNode
+ * (Database ??)
  * @author Auras
  *
  */
-public class Tree {
+public class Tree implements XMLElement {
 	TreeNode root;
 	
 	public Tree(Object value) {
