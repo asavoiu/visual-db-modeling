@@ -5,6 +5,7 @@ package ro.visualDB.initiate.connections;
  */
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,33 +18,27 @@ import ro.visualDB.xml.TreeNode;
 public class MySQLDatabaseConnection implements IDatabaseConnection {
 	Connection conn = null;
 
-    private String database;
-	private String url;
+	private String host;
 	private String user;
 	private String password;
 	private String port;
+	private String url;
 
 	public MySQLDatabaseConnection() throws Exception{
 		throw new Exception("No Credentials");
 	}
 	
-	public MySQLDatabaseConnection(String url, String user, String password, String port, String database) throws Exception {
-		this.url = url;
+	public MySQLDatabaseConnection(String host,
+			String port,
+			String user,
+			String password) throws Exception {
+		this.host = host;
+		this.port = port;
 		this.user = user;
 		this.password = password;
-		this.database = database;
-		this.port = port;
-	}
-	
-	private void connect() throws Exception {
-        System.out.println("-----------Iniitiating connection to "+database+"-----------");
-		conn = MySqlConnectionFactory.getConnection(url, user, password);
-        System.out.println("-----------Connection successful-----------");
-	}
-	
-	private void closeConnection() throws Exception {
-		conn.close();
-		conn = null;
+		this.url = "jdbc:mysql://"+ host + ":" + port + "/";
+     	Class.forName("com.mysql.jdbc.Driver").newInstance();
+     	this.conn = DriverManager.getConnection(url, user, password);
 	}
 	
 	@Override
@@ -51,12 +46,7 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
 		return conn;
 	}
 	
-	public Tree getSchema() throws Exception {
-		return getSchema(database);
-	}
-	
 	public Tree getSchema(String database) throws Exception {
-		connect();
 		Tree tree = new Tree(new TreeNode(database));
 		String query = "SELECT table_name, table_type "
 				+ " FROM information_schema.tables"
@@ -72,7 +62,6 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
 				tree.addNode(new TreeNode(newTable));
 			}
 			
-			closeConnection();
 			return tree;
 			// do not catch exceptions
 		} finally {
@@ -92,34 +81,8 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
 				}
 				stmt = null;
 			}
-			if (conn != null) {
-				try {
-					closeConnection();
-				} catch (SQLException sqlEx) {
-					// ignore	
-				}
-			}
 		}
 	}
-
-    /**
-     *  Getters and setters for private Strings
-     */
-    public String getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(String database) {
-        this.database = database;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public String getUser() {
         return user;
@@ -144,4 +107,20 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
     public void setPort(String port) {
         this.port = port;
     }
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }
