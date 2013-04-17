@@ -1,6 +1,11 @@
 package ro.visualDB.sql.model;
 
-public class Table {
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import ro.visualDB.xml.XMLElement;
+
+public class Table implements XMLElement {
 	/* TABLE_CAT  => table catalog (may be null) */
 	String tableCatalogName = null;
 	/* TABLE_SCHEM  => table schema (may be null) */
@@ -90,5 +95,13 @@ public class Table {
 	
 	public String toString() {
 		return tableName;
+	}
+	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el;
+		el = doc.createElement("table");
+		el.setAttribute("name", getTableName());
+		el.setAttribute("type", getTableType());
+		return el;
 	}
 }

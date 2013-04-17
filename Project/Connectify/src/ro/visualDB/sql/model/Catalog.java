@@ -3,8 +3,6 @@ package ro.visualDB.sql.model;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import ro.visualDB.logging.AppLogger;
-import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
 /**
@@ -65,11 +63,11 @@ public class Catalog implements XMLElement {
 		return catalogName;
 	}
 
-	//TODO Make proper XML element with tagName and attributes and shit
 	@Override
 	public Element getDomElement(Document doc) throws Exception {
 		Element el;
-		el = doc.createElement(catalogName);
+		el = doc.createElement(getCatalogTerm());
+		el.setAttribute("name", getCatalogName());
 		return el;
 	}
 }

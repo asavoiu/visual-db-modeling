@@ -1,6 +1,11 @@
 package ro.visualDB.sql.model;
 
-public class Column {
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import ro.visualDB.xml.XMLElement;
+
+public class Column implements XMLElement {
 	String tableCatalogName;
 	String tableSchemaName;
 	String tableName;
@@ -137,9 +142,10 @@ public class Column {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	/** COLUMN_DEF String => default value for the column,
-	 *  which should be interpreted as a string when the
-	 *  value is enclosed in single quotes (may be null) 
+	/**
+	 * COLUMN_DEF String => default value for the column,
+	 * which should be interpreted as a string when the
+	 * value is enclosed in single quotes (may be null) 
 	 */
 	public String getColumnDef() {
 		return columnDef;
@@ -165,7 +171,8 @@ public class Column {
 	public void setSqlDateTimeSub(int sqlDateTimeSub) {
 		this.sqlDateTimeSub = sqlDateTimeSub;
 	}
-	/** CHAR_OCTET_LENGTH int => for char types
+	/**
+	 * CHAR_OCTET_LENGTH int => for char types
 	 * the maximum number of bytes in the column 
 	 */
 	public int getCharOctetLength() {
@@ -183,7 +190,8 @@ public class Column {
 	public void setOrdinalPosition(int ordinalPosition) {
 		this.ordinalPosition = ordinalPosition;
 	}
-	/** IS_NULLABLE String => ISO rules are used to determine the nullability for a column.
+	/**
+	 * IS_NULLABLE String => ISO rules are used to determine the nullability for a column.
 	 * YES --- if the column can include NULLs 
 	 * NO --- if the column cannot include NULLs 
 	 * empty string --- if the nullability for the column is unknown 
@@ -194,8 +202,9 @@ public class Column {
 	public void setIsNullable(String isNullable) {
 		this.isNullable = isNullable;
 	}
-	/** SCOPE_CATALOG String => catalog of table that is the scope
-	 *  of a reference attribute (null if DATA_TYPE isn't REF)
+	/**
+	 * SCOPE_CATALOG String => catalog of table that is the scope
+	 * of a reference attribute (null if DATA_TYPE isn't REF)
 	 */
 	public String getScopeCatalog() {
 		return scopeCatalog;
@@ -203,8 +212,9 @@ public class Column {
 	public void setScopeCatalog(String scopeCatalog) {
 		this.scopeCatalog = scopeCatalog;
 	}
-	/** SCOPE_SCHEMA String => schema of table that is the scope
-	 *  of a reference attribute (null if the DATA_TYPE isn't REF)
+	/**
+	 * SCOPE_SCHEMA String => schema of table that is the scope
+	 * of a reference attribute (null if the DATA_TYPE isn't REF)
 	 */
 	public String getScopeSchema() {
 		return scopeSchema;
@@ -212,8 +222,9 @@ public class Column {
 	public void setScopeSchema(String scopeSchema) {
 		this.scopeSchema = scopeSchema;
 	}
-	/** SCOPE_TABLE String => table name that this the scope
-	 *  of a reference attribute (null if the DATA_TYPE isn't REF) 
+	/** 
+	 * SCOPE_TABLE String => table name that this the scope
+	 * of a reference attribute (null if the DATA_TYPE isn't REF) 
 	 */
 	public String getScopeTable() {
 		return scopeTable;
@@ -221,9 +232,10 @@ public class Column {
 	public void setScopeTable(String scopeTable) {
 		this.scopeTable = scopeTable;
 	}
-	/** SOURCE_DATA_TYPE short => source type of a distinct type
-	 *  or user-generated Ref type, SQL type from java.sql.Types
-	 *  (null if DATA_TYPE isn't DISTINCT or user-generated REF) 
+	/** 
+	 * SOURCE_DATA_TYPE short => source type of a distinct type
+	 * or user-generated Ref type, SQL type from java.sql.Types
+	 * (null if DATA_TYPE isn't DISTINCT or user-generated REF) 
 	 */
 	public short getSourceDataType() {
 		return sourceDataType;
@@ -231,7 +243,8 @@ public class Column {
 	public void setSourceDataType(short sourceDataType) {
 		this.sourceDataType = sourceDataType;
 	}
-	/** IS_AUTOINCREMENT String => Indicates whether this column is auto incremented 
+	/**
+	 * IS_AUTOINCREMENT String => Indicates whether this column is auto incremented 
 	 * YES --- if the column is auto incremented 
 	 * NO --- if the column is not auto incremented 
 	 * empty string --- if it cannot be determined whether the column is auto incremented
@@ -242,11 +255,12 @@ public class Column {
 	public void setIsAutoIncrement(String isAutoIncrement) {
 		this.isAutoIncrement = isAutoIncrement;
 	}
-	/** IS_GENERATEDCOLUMN String => Indicates whether this is a generated column 
-	* YES --- if this a generated column 
-	* NO --- if this not a generated column 
-	* empty string --- if it cannot be determined whether this is a generated column
-	*/
+	/** 
+	 * IS_GENERATEDCOLUMN String => Indicates whether this is a generated column 
+	 * YES --- if this a generated column 
+	 * NO --- if this not a generated column 
+	 * empty string --- if it cannot be determined whether this is a generated column
+	 */
 	public String getIsGeneratedColumn() {
 		return isGeneratedColumn;
 	}
@@ -256,5 +270,15 @@ public class Column {
 	
 	public String toString() {
 		return columnName;
+	}
+	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el;
+		el = doc.createElement("column");
+		el.setAttribute("name", getColumnName());
+		//el.setAttribute("isAutoIncrement", getIsAutoIncrement());
+		//el.setAttribute("isNullable", getIsNullable());
+		el.setAttribute("dataType", getDataType() + "");
+		return el;
 	}
 }

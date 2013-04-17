@@ -1,6 +1,11 @@
 package ro.visualDB.sql.model;
 
-public class Schema {
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import ro.visualDB.xml.XMLElement;
+
+public class Schema implements XMLElement{
 	private String schemaTerm;
 	private String schemaName;
 	private String catalogName;
@@ -35,5 +40,12 @@ public class Schema {
 
 	public String toString() {
 		return schemaName;
+	}
+	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el;
+		el = doc.createElement(getSchemaTerm());
+		el.setAttribute("name", getSchemaName());
+		return el;
 	}
 }

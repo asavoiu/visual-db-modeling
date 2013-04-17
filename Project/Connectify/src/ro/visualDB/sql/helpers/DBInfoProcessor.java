@@ -34,24 +34,63 @@ public class DBInfoProcessor {
 			rs = dbm.getTypeInfo();
 			while (rs.next()) {
 				DataType type = new DataType();
-				type.setTypeName(rs.getString(1));
-				type.setDataType(rs.getInt(2));
-				type.setPrecision(rs.getInt(3));
-				type.setLiteralPrefix(rs.getString(4));
-				type.setLiteralSuffix(rs.getString(5));
-				type.setCreateParams(rs.getString(6));
-				type.setNullable(rs.getShort(7));
-				type.setCaseSensitive(rs.getBoolean(8));
-				type.setSearchable(rs.getShort(9));
-				type.setUnsignedAttribute(rs.getBoolean(10));
-				type.setFixedPrecScale(rs.getBoolean(11));
-				type.setAutoIncrement(rs.getBoolean(12));
-				type.setLocalTypeName(rs.getString(13));
-				type.setMinimumScale(rs.getShort(14));
-				type.setMaximumScale(rs.getShort(15));
-				type.setSqlDataType(rs.getInt(16));
-				type.setSqlDatetimeSub(rs.getInt(17));
-				type.setNumPrecRadix(rs.getInt(18));
+				/* We need to do a try catch on every column because
+				 * some of the columns may not be present in the resultSet
+				 */
+				try {
+					type.setTypeName(rs.getString("TYPE_NAME"));
+				} catch (SQLException e) {}
+				try {
+					type.setDataType(rs.getInt("DATA_TYPE"));
+				} catch (SQLException e) {}
+				try {
+					type.setPrecision(rs.getInt("PRECISION"));
+				} catch (SQLException e) {}
+				try {
+					type.setLiteralPrefix(rs.getString("LITERAL_PREFIX"));
+				} catch (SQLException e) {}
+				try {
+					type.setLiteralSuffix(rs.getString("LITERAL_SUFFIX"));
+				} catch (SQLException e) {}
+				try {
+					type.setCreateParams(rs.getString("CREATE_PARAMS"));
+				} catch (SQLException e) {}
+				try {
+					type.setNullable(rs.getShort("NULLABLE"));
+				} catch (SQLException e) {}
+				try {
+					type.setCaseSensitive(rs.getBoolean("CASE_SENSITIVE"));
+				} catch (SQLException e) {}
+				try {
+					type.setSearchable(rs.getShort("SEARCHABLE"));
+				} catch (SQLException e) {}
+				try {
+					type.setUnsignedAttribute(rs.getBoolean("UNSIGNED_ATTRIBUTE"));
+				} catch (SQLException e) {}
+				try {
+					type.setFixedPrecScale(rs.getBoolean("FIXED_PREC_SCALE"));
+				} catch (SQLException e) {}
+				try {
+					type.setAutoIncrement(rs.getBoolean("AUTO_INCREMENT"));
+				} catch (SQLException e) {}
+				try {
+					type.setLocalTypeName(rs.getString("LOCAL_TYPE_NAME"));
+				} catch (SQLException e) {}
+				try {
+					type.setMinimumScale(rs.getShort("MINIMUM_SCALE"));
+				} catch (SQLException e) {}
+				try {
+					type.setMaximumScale(rs.getShort("MAXIMUM_SCALE"));
+				} catch (SQLException e) {}
+				try {
+					type.setSqlDataType(rs.getInt("SQL_DATA_TYPE"));
+				} catch (SQLException e) {}
+				try {
+					type.setSqlDatetimeSub(rs.getInt("SQL_DATETIME_SUB"));
+				} catch (SQLException e) {}
+				try {
+					type.setNumPrecRadix(rs.getInt("NUM_PREC_RADIX"));
+				} catch (SQLException e) {}
 				types.add(type);
 			}
 		} finally {
@@ -98,11 +137,13 @@ public class DBInfoProcessor {
 	public ArrayList<Catalog> getCatalogs() throws SQLException {
 		ResultSet rs = null;
 		ArrayList<Catalog> catalogs = new ArrayList<Catalog>();
+		String catTerm = dbm.getCatalogTerm();
 		try {
 			rs = dbm.getCatalogs();
 			while (rs.next()) {
 				Catalog catalog = new Catalog();
 				catalog.setCatalogName(rs.getString(1));
+				catalog.setCatalogTerm(catTerm);
 				catalogs.add(catalog);
 			}
 		} finally {
@@ -129,7 +170,9 @@ public class DBInfoProcessor {
 			while (rs.next()) {
 				Schema schema = new Schema();
 				schema.setSchemaName(rs.getString(1));
-				schema.setCatalogName(rs.getString(2));
+				try {
+					schema.setCatalogName(rs.getString(2));
+				} catch (SQLException e) {}
 				schema.setSchemaTerm(schemaTerm);
 				schemas.add(schema);
 			}
@@ -157,7 +200,9 @@ public class DBInfoProcessor {
 			while (rs.next()) {
 				Schema schema = new Schema();
 				schema.setSchemaName(rs.getString(1));
-				schema.setCatalogName(rs.getString(2));
+				try {
+					schema.setCatalogName(rs.getString(2));
+				} catch (SQLException e) {}
 				schema.setSchemaTerm(schemaTerm);
 				schemas.add(schema);
 			}
@@ -187,21 +232,39 @@ public class DBInfoProcessor {
 			rs = dbm.getTables(catalog, schemaPattern, tableNamePattern, types);
 			while (rs.next()) {
 				Table t = new Table();
-				try{ 
-					t.setTableCatalogName(rs.getString(1));
+				/* We need to do a try catch on every column because
+				 * some of the columns may not be present in the resultSet
+				 */
+				try{
+						t.setTableCatalogName(rs.getString(1));
+				} catch (SQLException e) {}
+				try{
 					t.setTableSchemaName(rs.getString(2));
+				} catch (SQLException e) {}
+				try{
 					t.setTableName(rs.getString(3));
+				} catch (SQLException e) {}
+				try{
 					t.setTableType(rs.getString(4));
+				} catch (SQLException e) {}
+				try{
 					t.setRemarks(rs.getString(5));
+				} catch (SQLException e) {}
+				try{
 					t.setTypesCatalog(rs.getString(6));
-					t.setTypesSchema(rs.getString(7));
+				} catch (SQLException e) {}
+				try{
+						t.setTypesSchema(rs.getString(7));
+				} catch (SQLException e) {}
+				try{
 					t.setTypeName(rs.getString(8));
+				} catch (SQLException e) {}
+				try{
 					t.setSelfRefrencingColName(rs.getString(9));
+				} catch (SQLException e) {}
+				try{
 					t.setRefGeneration(rs.getString(10));
-				} catch (SQLException e) {
-					// Silently ignore(so silent you can sleep)
-					// not all fields may be returned
-				}
+				} catch (SQLException e) {}
 				tables.add(t);
 			}
 		} finally {
@@ -245,30 +308,79 @@ public class DBInfoProcessor {
 			rs = dbm.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
 			while (rs.next()) {
 				Column c = new Column();
-				c.setTableCatalogName(rs.getString(1));
-				c.setTableSchemaName(rs.getString(2));
-				c.setTableName(rs.getString(3));
-				c.setColumnName(rs.getString(4));
-				c.setDataType(rs.getInt(5));
-				c.setTypeName(rs.getString(6));
-				c.setColumnSize(rs.getInt(7));
+				/* We need to do a try catch on every column because
+				 * some of the columns may not be present in the resultSet
+				 */
+				try {
+					c.setTableCatalogName(rs.getString("TABLE_CAT"));
+				} catch (SQLException e) {}
+				try {
+					c.setTableSchemaName(rs.getString("TABLE_SCHEM"));
+				} catch (SQLException e) {}
+				try {
+					c.setTableName(rs.getString("TABLE_NAME"));
+				} catch (SQLException e) {}
+				try {
+					c.setColumnName(rs.getString("COLUMN_NAME"));
+				} catch (SQLException e) {}
+				try {
+					c.setDataType(rs.getInt("DATA_TYPE"));
+				} catch (SQLException e) {}
+				try {
+					c.setTypeName(rs.getString("TYPE_NAME"));
+				} catch (SQLException e) {}
+				try {
+					c.setColumnSize(rs.getInt("COLUMN_SIZE"));
+				} catch (SQLException e) {}
 				//skipp bufferLength;
-				c.setDecimalDigits(rs.getInt(8));
-				c.setNumPrecRadix(rs.getInt(9));
-				c.setNullable(rs.getInt(10));
-				c.setRemarks(rs.getString(11));
-				c.setColumnDef(rs.getString(12));
-				//c.setSqlDataType(rs.getInt(13));
-				c.setSqlDateTimeSub(rs.getInt(14));
-				c.setCharOctetLength(rs.getInt(15));
-				c.setOrdinalPosition(rs.getInt(16));
-				c.setIsNullable(rs.getString(17));
-				c.setScopeCatalog(rs.getString(18));
-				c.setScopeSchema(rs.getString(19));
-				c.setScopeTable(rs.getString(20));
-				c.setSourceDataType(rs.getShort(21));
-				c.setIsAutoIncrement(rs.getString(22));
-				c.setIsGeneratedColumn(rs.getString(23));
+				try {
+					c.setDecimalDigits(rs.getInt("DECIMAL_DIGITS"));
+				} catch (SQLException e) {}
+				try {
+					c.setNumPrecRadix(rs.getInt("NUM_PREC_RADIX"));
+				} catch (SQLException e) {}
+				try {
+					c.setNullable(rs.getInt("NULLABLE"));
+				} catch (SQLException e) {}
+				try {
+					c.setRemarks(rs.getString("REMARKS"));
+				} catch (SQLException e) {}
+				try {
+					c.setColumnDef(rs.getString("COLUMN_DEF"));
+				} catch (SQLException e) {}
+				try {
+					c.setSqlDataType(rs.getInt("SQL_DATA_TYPE"));
+				} catch (SQLException e) {}
+				try {
+					c.setSqlDateTimeSub(rs.getInt("SQL_DATETIME_SUB"));
+				} catch (SQLException e) {}
+				try {
+					c.setCharOctetLength(rs.getInt("CHAR_OCTET_LENGTH"));
+				} catch (SQLException e) {}
+				try {
+					c.setOrdinalPosition(rs.getInt("ORDINAL_POSITION"));
+				} catch (SQLException e) {}
+				try {
+					c.setIsNullable(rs.getString("IS_NULLABLE"));
+				} catch (SQLException e) {}
+				try {
+					c.setScopeCatalog(rs.getString("SCOPE_CATALOG"));
+				} catch (SQLException e) {}
+				try {
+					c.setScopeSchema(rs.getString("SCOPE_SCHEMA"));
+				} catch (SQLException e) {}
+				try {
+					c.setScopeTable(rs.getString("SCOPE_TABLE"));
+				} catch (SQLException e) {}
+				try {
+					c.setSourceDataType(rs.getShort("SOURCE_DATA_TYPE"));
+				} catch (SQLException e) {}
+				try {
+					c.setIsAutoIncrement(rs.getString("IS_AUTOINCREMENT"));
+				} catch (SQLException e) {}
+				try {
+					c.setIsGeneratedColumn(rs.getString("IS_GENERATEDCOLUMN"));
+				} catch (SQLException e) {}
 				columns.add(c);
 			}
 		} finally {

@@ -2,6 +2,7 @@ package ro.visualDB.test;
 
 import ro.visualDB.logging.AppLogger;
 import ro.visualDB.sql.connection.IDatabaseConnection;
+import ro.visualDB.sql.connection.MySQLDatabaseConnection;
 import ro.visualDB.sql.connection.PostgreSQLDatabaseConnection;
 import ro.visualDB.sql.helpers.DBInfoProcessor;
 import ro.visualDB.xml.Tree;
@@ -24,16 +25,16 @@ public class Test {
                     "8907",
 					"octavyan55",
 					"q1w2e3"
-            );
-			IDatabaseConnection dbConn = new MySQLDatabaseConnection(
+            );*/
+			
+			IDatabaseConnection dbConn2 = new MySQLDatabaseConnection(
 					"localhost",
                     "3306",
 					"root",
 					""
-            );*/
-			//dbConnectionMySQL.test();
-            IDatabaseConnection dbConn;
-            dbConn = new PostgreSQLDatabaseConnection(
+            );
+			
+            IDatabaseConnection dbConn = new PostgreSQLDatabaseConnection(
 					"ec2-23-21-161-153.compute-1.amazonaws.com",
                     "5432",
 					"ikqepbqiwxmcwe",
