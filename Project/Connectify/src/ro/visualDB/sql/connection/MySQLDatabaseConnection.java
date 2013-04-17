@@ -1,4 +1,4 @@
-package ro.visualDB.initiate.connections;
+package ro.visualDB.sql.connection;
 
 /**
  * Class for
@@ -6,23 +6,16 @@ package ro.visualDB.initiate.connections;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import ro.visualDB.initiate._types._TableType;
-import ro.visualDB.initiate.tools.Table;
-import ro.visualDB.xml.Tree;
-import ro.visualDB.xml.TreeNode;
 
 public class MySQLDatabaseConnection implements IDatabaseConnection {
 	Connection conn = null;
 
-	private String host;
-	private String user;
-	private String password;
-	private String port;
-	private String url;
+	private String host = null;
+	private String user = null;
+	private String password = null;
+	private String port = null;
+    private String url = null;
 
 	public MySQLDatabaseConnection() throws Exception{
 		throw new Exception("No Credentials");
@@ -42,48 +35,16 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
 	}
 	
 	@Override
-	public Connection getConnection() {
+	public Connection getConnection() throws SQLException {
+		if (conn == null) {
+			throw new SQLException("Null Connection");
+		} else if (conn.isClosed()) {
+			throw new SQLException("Closed Connection");
+
+		}
 		return conn;
 	}
 	
-	public Tree getSchema(String database) throws Exception {
-		Tree tree = new Tree(new TreeNode(database));
-		String query = "SELECT table_name, table_type "
-				+ " FROM information_schema.tables"
-				+ " WHERE table_schema = '" + database + "' "
-				+ " ORDER BY table_name";
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
-			while (rs.next()) {
-				Table newTable = new Table(rs.getString(1), _TableType.getTableType(rs.getString(2)));
-				tree.addNode(new TreeNode(newTable));
-			}
-			
-			return tree;
-			// do not catch exceptions
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException sqlEx) {
-					// ignore
-				}
-				rs = null;
-		    }
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-					// ignore	
-				}
-				stmt = null;
-			}
-		}
-	}
-
     public String getUser() {
         return user;
     }
@@ -122,5 +83,9 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public String toString() {
+		return host;
 	}
 }
