@@ -5,12 +5,15 @@ import org.w3c.dom.Element;
 
 import ro.visualDB.xml.XMLElement;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Column implements XMLElement {
 	String tableCatalogName;
 	String tableSchemaName;
 	String tableName;
 	String columnName;
-	int dataType;
+	String dataType;
 	String typeName;
 	int columnSize;
 	int bufferLength;
@@ -30,8 +33,10 @@ public class Column implements XMLElement {
 	short sourceDataType;
 	String isAutoIncrement;
 	String isGeneratedColumn;
-	
-	/**
+    boolean primaryKey;
+    boolean foreignKey;
+    ForeignKeys foreignKeys;
+    /**
 	 * TABLE_CAT String => table catalog (may be null)
 	 */
 	public String getTableCatalogName() {
@@ -70,10 +75,10 @@ public class Column implements XMLElement {
 	/**
 	 *  DATA_TYPE int => SQL type from java.sql.Types
 	 */
-	public int getDataType() {
+	public String getDataType() {
 		return dataType;
 	}
-	public void setDataType(int dataType) {
+	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
 	/**
@@ -267,18 +272,55 @@ public class Column implements XMLElement {
 	public void setIsGeneratedColumn(String isGeneratedColumn) {
 		this.isGeneratedColumn = isGeneratedColumn;
 	}
+
+    public boolean isPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(boolean primaryKey) {
+        this.primaryKey = primaryKey;
+    }
 	
 	public String toString() {
 		return columnName;
 	}
-	@Override
+
+    public boolean isForeignKey() {
+        return foreignKey;
+    }
+
+    public void setForeignKey(boolean foreignKey) {
+        this.foreignKey = foreignKey;
+    }
+
+    public ForeignKeys getForeignKeys() {
+        return foreignKeys;
+    }
+
+    public void setForeignKeys(ForeignKeys foreignKeys) {
+        this.foreignKeys = foreignKeys;
+    }
+
+    @Override
 	public Element getDomElement(Document doc) throws Exception {
 		Element el;
+        HashMap<Integer,String> dataTypes = new DataTypeValues().getDataTypes();
 		el = doc.createElement("column");
 		el.setAttribute("name", getColumnName());
-		//el.setAttribute("isAutoIncrement", getIsAutoIncrement());
-		//el.setAttribute("isNullable", getIsNullable());
-		el.setAttribute("dataType", getDataType() + "");
+
+        if(isForeignKey()){
+            el.setAttribute("foreignKey", isForeignKey()+"");
+            el.setAttribute("primaryKeySchemaName", getForeignKeys().getPrimaryKeySchemaName());
+            el.setAttribute("primaryKeyTableName", getForeignKeys().getPrimaryKeyTableName());
+            el.setAttribute("primaryKeyColumName", getForeignKeys().getPrimaryKeyColumnName());
+        }
+
+        if(isPrimaryKey()){
+            el.setAttribute("primaryKey", "true");
+        }
+        el.setAttribute("dataType", dataTypes.get(Integer.valueOf(getDataType())));
+        el.setAttribute("isAutoIncrement", getIsAutoIncrement());
+		el.setAttribute("isNullable", getIsNullable());
 		return el;
 	}
 }

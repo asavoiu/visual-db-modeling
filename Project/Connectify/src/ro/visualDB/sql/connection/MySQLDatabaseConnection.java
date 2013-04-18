@@ -9,27 +9,28 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MySQLDatabaseConnection implements IDatabaseConnection {
-	Connection conn = null;
+	private Connection conn;
 
-	private String host = null;
-	private String user = null;
-	private String password = null;
-	private String port = null;
-    private String url = null;
+	private String host;
+	private String user;
+	private String password;
+	private String port;
+    private String url;
+    private String database;
 
 	public MySQLDatabaseConnection() throws Exception{
 		throw new Exception("No Credentials");
 	}
 	
-	public MySQLDatabaseConnection(String host,
-			String port,
-			String user,
-			String password) throws Exception {
+	public MySQLDatabaseConnection(String host, String port, String user,
+                                   String password, String database) throws Exception {
+        System.out.println("____________________Starting MySQL connection for "+host+"____________________");
 		this.host = host;
 		this.port = port;
 		this.user = user;
 		this.password = password;
-		this.url = "jdbc:mysql://"+ host + ":" + port + "/";
+        this.database = database;
+        this.url = "jdbc:mysql://"+ host + ":" + port + "/";
      	Class.forName("com.mysql.jdbc.Driver").newInstance();
      	this.conn = DriverManager.getConnection(url, user, password);
 	}
@@ -88,4 +89,12 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
 	public String toString() {
 		return host;
 	}
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
 }

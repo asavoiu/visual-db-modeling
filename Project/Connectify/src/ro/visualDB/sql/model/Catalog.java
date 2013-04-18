@@ -33,6 +33,7 @@ import ro.visualDB.xml.XMLElement;
  * (but can not own - no concept of ownership) objects in one or more databases
  * to identify any object you need (database name + object name)
  */
+
 public class Catalog implements XMLElement {
 	private String catalogTerm;
 	private String catalogName;

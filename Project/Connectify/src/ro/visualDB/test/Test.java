@@ -20,19 +20,20 @@ public class Test {
 					"root",
 					""
             );*/
-            /*IDatabaseConnection dbConn = new MySQLDatabaseConnection(
-					"instance43492.db.xeround.com",
-                    "8907",
-					"octavyan55",
-					"q1w2e3"
-            );*/
+//            IDatabaseConnection dbConn2 = new MySQLDatabaseConnection(
+//					"instance43492.db.xeround.com",
+//                    "8907",
+//					"octavyan55",
+//					"q1w2e3",
+//                    ""
+//            );
 			
-			IDatabaseConnection dbConn2 = new MySQLDatabaseConnection(
-					"localhost",
-                    "3306",
-					"root",
-					""
-            );
+//			IDatabaseConnection dbConn2 = new MySQLDatabaseConnection(
+//					"localhost",
+//                    "3306",
+//					"root",
+//					""
+//            );
 			
             IDatabaseConnection dbConn = new PostgreSQLDatabaseConnection(
 					"ec2-23-21-161-153.compute-1.amazonaws.com",
@@ -46,9 +47,9 @@ public class Test {
 			
 			TreeNode tn = dbip.buildTreeForRemoteConnection();
 			tn.print(2);
-			
+
 			Tree tree = new Tree(tn);
-			XMLWriter.writeToFile("C:\\Users\\Auras\\git\\visual-db-modeling\\Project\\Connectify\\test.xml", tree);
+			XMLWriter.writeToFile("C:\\Users\\Bogdan\\Desktop\\proj_local_db_modelling\\Connectify\\test.xml", tree);
 		} catch (Exception e) {
 			e.printStackTrace();
 			AppLogger.getLogger().error("Error", e);
