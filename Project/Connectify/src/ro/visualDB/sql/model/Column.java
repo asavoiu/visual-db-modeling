@@ -33,8 +33,8 @@ public class Column implements XMLElement {
 	private short sourceDataType;
 	private String isAutoIncrement;
 	private String isGeneratedColumn;
-    boolean primaryKey;
-    boolean foreignKey;
+   	private boolean primaryKey;
+    	private boolean foreignKey;
     ForeignKeys foreignKeys;
     /**
 	 * TABLE_CAT String => table catalog (may be null)
