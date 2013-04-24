@@ -9,6 +9,7 @@ import ro.visualDB.sql.connection.IDatabaseConnection;
 import ro.visualDB.sql.model.*;
 import ro.visualDB.xml.TreeNode;
 
+
 public class DBInfoProcessor {
 	IDatabaseConnection databaseConnection;
 	DatabaseMetaData dbm;

@@ -1,8 +1,8 @@
 package ro.visualDB.test;
 
 import ro.visualDB.logging.AppLogger;
+import ro.visualDB.script.PostgreScriptWriter;
 import ro.visualDB.sql.connection.IDatabaseConnection;
-import ro.visualDB.sql.connection.MySQLDatabaseConnection;
 import ro.visualDB.sql.connection.PostgreSQLDatabaseConnection;
 import ro.visualDB.sql.helpers.DBInfoProcessor;
 import ro.visualDB.xml.Tree;
@@ -43,14 +43,19 @@ public class Test {
 					"dbtooekfdenm82",
 					true
             );
-			DBInfoProcessor dbip = new DBInfoProcessor(dbConn);
+
+            DBInfoProcessor dbip = new DBInfoProcessor(dbConn);
 			
 			TreeNode tn = dbip.buildTreeForRemoteConnection();
-			tn.print(2);
 
-			Tree tree = new Tree(tn);
+            //export scriptul bazei
+            PostgreScriptWriter postgreScriptWriter = new PostgreScriptWriter(tn,"C:\\Users\\Bogdan\\Desktop\\proj_local_db_modelling\\Connectify\\script.sql");
+            postgreScriptWriter.writeScriptToFile();
+
+//			tn.print(2);
+            Tree tree = new Tree(tn);
 			XMLWriter.writeToFile("C:\\Users\\Bogdan\\Desktop\\proj_local_db_modelling\\Connectify\\test.xml", tree);
-		} catch (Exception e) {
+		} catch (Exception e){
 			e.printStackTrace();
 			AppLogger.getLogger().error("Error", e);
 		}
