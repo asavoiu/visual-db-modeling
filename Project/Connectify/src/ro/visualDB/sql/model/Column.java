@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class Column implements XMLElement {
 	private String tableCatalogName;
+
     private String tableSchemaName;
     private String tableName;
     private String columnName;
@@ -36,6 +37,7 @@ public class Column implements XMLElement {
     private boolean primaryKey;
     private boolean foreignKey;
     private ForeignKeys foreignKeys;
+
 
     /**
 	 * TABLE_CAT String => table catalog (may be null)
