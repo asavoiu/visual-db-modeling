@@ -16,14 +16,14 @@ import org.w3c.dom.Element;
 public class XMLWriter {
 	public static String INDENT_AMOUNT = "4";
 	
-	public static void writeToFile(String f, Tree t) throws Exception {
+	public static void writeToFile(String f, XMLElement element) throws Exception {
 		  DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		  DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
 		  //root elements
 		  Document doc = docBuilder.newDocument();
-		  Element rootElement = t.getDomElement(doc);
-		  doc.appendChild(rootElement);
+		  Element el = element.getDomElement(doc);
+		  doc.appendChild(el);
 		  
 		  //write the content into xml file
 		  TransformerFactory transformerFactory = TransformerFactory.newInstance();

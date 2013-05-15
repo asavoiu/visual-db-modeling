@@ -2,7 +2,9 @@ package ro.visualDB.sql.model;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
+import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
 import java.util.HashMap;
@@ -321,9 +323,19 @@ public class Column implements XMLElement {
         if(isPrimaryKey()){
             el.setAttribute("primaryKey", "true");
         }
-        el.setAttribute("dataType", dataTypes.get(Integer.valueOf(getDataType())));
+        //el.setAttribute("dataType", dataTypes.get(Integer.valueOf(getDataType())));
         el.setAttribute("isAutoIncrement", getIsAutoIncrement());
 		el.setAttribute("isNullable", getIsNullable());
 		return el;
 	}
+    
+    @Override
+    public TreeNode parseElement(String uri, String localName, String qName,
+    		Attributes atts) {
+    	TreeNode tn = new TreeNode();
+		Column newCol = new Column();
+		newCol.setColumnName(atts.getValue("name"));
+		tn.setValue(newCol);
+		return tn;
+    }
 }

@@ -2,6 +2,7 @@ package ro.visualDB.xml;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 /**
  * Root Tree Node class
@@ -13,7 +14,7 @@ import org.w3c.dom.Element;
  */
 public class Tree implements XMLElement {
 	TreeNode root;
-	
+
 	public Tree(Object value) {
 		root = new TreeNode(value);
 	}
@@ -47,5 +48,12 @@ public class Tree implements XMLElement {
 	 */
 	public Element getDomElement(Document doc) throws Exception {
 		return root.getDomElement(doc);
+	}
+	
+	@Override
+	public TreeNode parseElement(String uri, String localName, String qName,
+			Attributes atts) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

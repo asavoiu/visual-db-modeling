@@ -1,12 +1,12 @@
 package ro.visualDB.test;
 
 import ro.visualDB.logging.AppLogger;
-import ro.visualDB.script.PostgreScriptWriter;
+import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.connection.IDatabaseConnection;
-import ro.visualDB.sql.connection.PostgreSQLDatabaseConnection;
+import ro.visualDB.sql.connection.MySQLDatabaseConnection;
 import ro.visualDB.sql.helpers.DBInfoProcessor;
-import ro.visualDB.xml.Tree;
 import ro.visualDB.xml.TreeNode;
+import ro.visualDB.xml.XMLReader;
 import ro.visualDB.xml.XMLWriter;
 
 public class Test {
@@ -28,33 +28,45 @@ public class Test {
 //                    ""
 //            );
 			
-//			IDatabaseConnection dbConn2 = new MySQLDatabaseConnection(
-//					"localhost",
-//                    "3306",
-//					"root",
-//					""
-//            );
+			IDatabaseConnection dbConn = new MySQLDatabaseConnection(
+					"localhost",
+                    "3306",
+					"root",
+					"",
+					"pw"
+            );
 			
-            IDatabaseConnection dbConn = new PostgreSQLDatabaseConnection(
+         /*   IDatabaseConnection dbConn = new PostgreSQLDatabaseConnection(
 					"ec2-23-21-161-153.compute-1.amazonaws.com",
                     "5432",
 					"ikqepbqiwxmcwe",
 					"cI6PNkfjz4SajHnobEeCHwmvfv",
 					"dbtooekfdenm82",
 					true
-            );
+            );*/
 
             DBInfoProcessor dbip = new DBInfoProcessor(dbConn);
+			Remote rmt = new Remote();
+			rmt.setHost("localhost");
+            rmt.setPort("3306");
+			rmt.setUser("root");
+			rmt.setPassword("");
+			rmt.setDatabase("pw");
 			
-			TreeNode tn = dbip.buildTreeForRemoteConnection();
-
+			TreeNode tn = new TreeNode();
+			tn.setValue(rmt);
+			dbip.buildTreeForRemoteConnectionTreeNode(tn);
+			
             //export scriptul bazei
-            PostgreScriptWriter postgreScriptWriter = new PostgreScriptWriter(tn,"C:\\Users\\Bogdan\\Desktop\\proj_local_db_modelling\\Connectify\\script.sql");
-            postgreScriptWriter.writeScriptToFile();
+            //PostgreScriptWriter postgreScriptWriter = new PostgreScriptWriter(tn,"C:\\Users\\Auras\\Desktop\\script.sql");
+            //postgreScriptWriter.writeScriptToFile();
 
 //			tn.print(2);
-            Tree tree = new Tree(tn);
-			XMLWriter.writeToFile("C:\\Users\\Bogdan\\Desktop\\proj_local_db_modelling\\Connectify\\test.xml", tree);
+            //Tree tree = new Tree(tn);
+			XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test.xml", tn);
+			TreeNode readTn = XMLReader.readFromFile("C:\\Users\\Auras\\Desktop\\test.xml");
+			XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test2.xml", readTn);
+			
 		} catch (Exception e){
 			e.printStackTrace();
 			AppLogger.getLogger().error("Error", e);

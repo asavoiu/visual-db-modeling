@@ -2,7 +2,9 @@ package ro.visualDB.sql.model;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
+import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
 /**
@@ -32,6 +34,11 @@ import ro.visualDB.xml.XMLElement;
  * - user == named account, who is can connect to server and use 
  * (but can not own - no concept of ownership) objects in one or more databases
  * to identify any object you need (database name + object name)
+ * 
+ * From official MySql Forum:
+ * "Difference between Catalog and Schema" -> In MySQL, they are the same.
+ * Also:
+ * CREATE DATABASE has the synonym CREATE SCHEMA.
  */
 
 public class Catalog implements XMLElement {
@@ -67,8 +74,19 @@ public class Catalog implements XMLElement {
 	@Override
 	public Element getDomElement(Document doc) throws Exception {
 		Element el;
-		el = doc.createElement(getCatalogTerm());
+		el = doc.createElement("catalog");
 		el.setAttribute("name", getCatalogName());
 		return el;
 	}
+
+	@Override
+	public TreeNode parseElement(String uri, String localName, String qName,
+			Attributes atts) {
+		TreeNode tn = new TreeNode();
+		Catalog newCat = new Catalog();
+		newCat.setCatalogName(atts.getValue("name"));
+		tn.setValue(newCat);
+		return tn;
+	}
+	
 }

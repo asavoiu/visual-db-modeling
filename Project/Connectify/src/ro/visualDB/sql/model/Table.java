@@ -2,7 +2,9 @@ package ro.visualDB.sql.model;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
+import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
 public class Table implements XMLElement {
@@ -103,5 +105,15 @@ public class Table implements XMLElement {
 		el.setAttribute("name", getTableName());
 		el.setAttribute("type", getTableType());
 		return el;
+	}
+	
+	@Override
+	public TreeNode parseElement(String uri, String localName, String qName,
+			Attributes atts) {
+    	TreeNode tn = new TreeNode();
+    	Table newTbl = new Table();
+    	newTbl.setTableName(atts.getValue("name"));
+		tn.setValue(newTbl);
+		return tn;
 	}
 }

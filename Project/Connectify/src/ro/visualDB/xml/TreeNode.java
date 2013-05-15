@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 import ro.visualDB.logging.AppLogger;
 
@@ -89,18 +90,29 @@ public class TreeNode implements XMLElement {
 
 	public Element getDomElement(Document doc) throws Exception {
 		Element el;
-		 if (value instanceof XMLElement) {
-			 el = ((XMLElement) value).getDomElement(doc);
-			 for (TreeNode t : getChildren()) {
-				 el.appendChild(t.getDomElement(doc));
-			 }
-		 } else {
-			 AppLogger.getLogger().error("Tree node Value not instance of XMLElement");
-			 el = doc.createElement(value.toString());
-			 for (TreeNode t : getChildren()) {
-				 el.appendChild(t.getDomElement(doc));
-			 }
-		 }
-		 return el;
+		if (value instanceof XMLElement) {
+			el = ((XMLElement) value).getDomElement(doc);
+			for (TreeNode t : getChildren()) {
+				el.appendChild(t.getDomElement(doc));
+			}
+		} else {
+			AppLogger.getLogger().info("Tree node Value not instance of XMLElement");
+			el = doc.createElement(value.toString());
+			for (TreeNode t : getChildren()) {
+				el.appendChild(t.getDomElement(doc));
+			}
+		}
+		return el;
+	}
+	
+	@Override
+	public TreeNode parseElement(String uri, String localName, String qName,
+			Attributes atts) {
+		if (value instanceof XMLElement) {
+			return ((XMLElement) value).parseElement(uri, localName, qName, atts);
+		} else {
+			AppLogger.getLogger().info("Tree node Value not instance of XMLElement");
+			return null;
+		}
 	}
 }

@@ -501,4 +501,13 @@ public class DBInfoProcessor {
 		}
 		return tree;
 	}
+	
+	public TreeNode buildTreeForRemoteConnectionTreeNode(TreeNode remoteTreeNode) throws SQLException{
+		ArrayList<Catalog> catalogs = getCatalogs();
+		for (Catalog ct : catalogs) {
+			TreeNode treeNodeCt = buildTreeForCatalogNode(ct);
+			remoteTreeNode.addChild(treeNodeCt);
+		}
+		return remoteTreeNode;
+	}
 }
