@@ -11,12 +11,12 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-public class PostgreScriptWriter {
+public class PgScriptGenerator {
 
     private ArrayList<TreeNode> dbName;
     private String filePath;
 
-    public PostgreScriptWriter(TreeNode tn, String filePath) {
+    public PgScriptGenerator(TreeNode tn, String filePath) {
         dbName = tn.getChildren();
         this.filePath = filePath;
     }
