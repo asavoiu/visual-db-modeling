@@ -317,7 +317,7 @@ public class Column implements XMLElement {
             el.setAttribute("foreignKey", isForeignKey()+"");
             el.setAttribute("primaryKeySchemaName", getForeignKeys().getPrimaryKeySchemaName());
             el.setAttribute("primaryKeyTableName", getForeignKeys().getPrimaryKeyTableName());
-            el.setAttribute("primaryKeyColumName", getForeignKeys().getPrimaryKeyColumnName());
+            el.setAttribute("primaryKeyColumnName", getForeignKeys().getPrimaryKeyColumnName());
         }
 
         if(isPrimaryKey()){
@@ -335,6 +335,23 @@ public class Column implements XMLElement {
     	TreeNode tn = new TreeNode();
 		Column newCol = new Column();
 		newCol.setColumnName(atts.getValue("name"));
+		String fkString = atts.getValue("foreignKey");
+		if (fkString != null) {
+			newCol.setForeignKey(fkString.equals("true") ? true: false);
+			ForeignKeys fks = new ForeignKeys();
+			fks.setPrimaryKeySchemaName(atts.getValue("primaryKeySchemaName"));
+			fks.setPrimaryKeyTableName(atts.getValue("primaryKeyTableName"));
+			fks.setPrimaryKeyColumnName(atts.getValue("primaryKeyColumnName"));
+			newCol.setForeignKeys(fks);
+		}
+		String pkString = atts.getValue("primaryKey");
+		if (pkString != null) {
+			newCol.setPrimaryKey(true);
+		} else {
+			newCol.setPrimaryKey(false);
+		}
+		newCol.setIsAutoIncrement(atts.getValue("isAutoIncrement"));
+		newCol.setIsNullable(atts.getValue("isNullable"));
 		tn.setValue(newCol);
 		return tn;
     }

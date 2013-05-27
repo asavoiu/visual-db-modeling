@@ -113,6 +113,7 @@ public class Table implements XMLElement {
     	TreeNode tn = new TreeNode();
     	Table newTbl = new Table();
     	newTbl.setTableName(atts.getValue("name"));
+    	newTbl.setTableType(atts.getValue("type"));
 		tn.setValue(newTbl);
 		return tn;
 	}
