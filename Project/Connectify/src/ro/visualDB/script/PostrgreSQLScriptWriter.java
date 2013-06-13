@@ -32,9 +32,9 @@ public class PostrgreSQLScriptWriter {
             myNewTable += "  "+c.getColumnName() + " " + c.getDataType();
 
 
-            if(c.getColumnLength()!=null){
-                myNewTable += " (" + c.getColumnLength().toString() + "," + c.getColumnPrecision() + ")";
-            }
+//            if(c.getColumnLength()!=null){
+//                myNewTable += " (" + c.getColumnLength().toString() + "," + c.getColumnPrecision() + ")";
+//            }
 
             if(c.getNullable()!=0){
                 myNewTable += " NOT NULL";

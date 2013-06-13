@@ -7,9 +7,6 @@ import java.util.ArrayList;
 
 public class MySQLScriptWriter {
 
-
-    public class PostrgreSQLScriptWriter {
-
         private String createDatabase(String dbName, String owner, String encoding, String tablespace, String lcColate,
                                       String lcCtype, int connectionLimit) {
 
@@ -24,10 +21,10 @@ public class MySQLScriptWriter {
             for(Column c:tableColumns){
                 myNewTable += "  "+c.getColumnName() + " " + c.getDataType();
 
-
-                if(c.getColumnLength()!=null){
-                    myNewTable += " (" + c.getColumnLength().toString() + ")";
-                }
+//
+//                if(c.getColumnLength()!=null){
+//                    myNewTable += " (" + c.getColumnLength().toString() + ")";
+//                }
 
                 if(c.getNullable()!=0){
                     myNewTable += " NOT NULL AUTO_INCREMENT";
@@ -59,5 +56,3 @@ public class MySQLScriptWriter {
 
     }
 
-
-}
