@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns:fx="http://javafx.com/fxml">
+  <children>
+    <SplitPane dividerPositions="0.19574780058651026" focusTraversable="true" layoutY="157.0" prefHeight="611.0" prefWidth="1366.0">
+      <items>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <children>
+            <TabPane prefHeight="607.0" prefWidth="774.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMinWidth="40.0">
+              <tabs>
+                <Tab text="Remotes">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <TreeView prefHeight="576.0" prefWidth="774.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="Remotes">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <TreeView prefHeight="576.0" prefWidth="774.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+          </children>
+        </AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <children>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="609.0" prefWidth="1177.9998779296875">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="1125.0">
+                  <children>
+                    <Accordion layoutX="205.0" layoutY="106.0" />
+                    <TitledPane animated="false" layoutX="49.0" layoutY="43.0" text="Table1">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      </content>
+                    </TitledPane>
+                    <Accordion layoutX="500.0" layoutY="84.0" />
+                    <TitledPane animated="false" layoutX="232.0" layoutY="353.0" text="Table3">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      </content>
+                    </TitledPane>
+                    <TitledPane animated="false" layoutX="642.0" layoutY="108.0" text="Table2">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      </content>
+                    </TitledPane>
+                  </children>
+                </AnchorPane>
+              </content>
+            </ScrollPane>
+          </children>
+        </AnchorPane>
+      </items>
+    </SplitPane>
+    <MenuBar layoutX="-1.0" prefWidth="1366.0">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="TODO" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="TODO" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="View">
+          <items>
+            <MenuItem mnemonicParsing="false" text="TODO" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Tools">
+          <items>
+            <MenuItem mnemonicParsing="false" text="TODO" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="TODO" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <!--   Menu Buttons   -->
+    <!--Sync-->
+    <Button id="bu" fx:id="button_sync" layoutX="24.0" layoutY="36.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0" styleClass="column-count:1">
+      <graphic>
+        <ImageView id="button_" fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/sync.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Import-->
+    <Button id="button_" fx:id="button_import" layoutX="152.0" layoutY="36.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="110.0" fitWidth="110.0">
+          <Image url="@icons/import.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Export-->
+    <Button fx:id="button_export" layoutX="279.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/export.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Version Control-->
+    <Button fx:id="button_version" layoutX="406.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/version.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Delete Element-->
+    <Button fx:id="button_delete" layoutX="532.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/delete.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Refresh-->
+    <Button fx:id="button_refresh" layoutX="659.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/refresh.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Users-->
+    <Button fx:id="button_users" layoutX="785.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/users.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Statistics-->
+    <Button fx:id="button_statistics" layoutX="910.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/statistics.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+    <!--Console-->
+    <Button fx:id="button_console" layoutX="1035.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+      <graphic>
+        <ImageView fitHeight="100.0" fitWidth="100.0">
+          <Image url="@icons/console.png" preserveRatio="false" smooth="false" />
+        </ImageView>
+      </graphic>
+    </Button>
+  </children>
+</AnchorPane>
