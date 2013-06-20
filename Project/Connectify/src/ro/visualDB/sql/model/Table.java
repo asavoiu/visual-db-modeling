@@ -175,4 +175,58 @@ public class Table extends TreeNode implements SQLElement {
 		}
 		return sql;
 	}
+	
+    @Override
+	public String getModifySqlStatement(int sqlEngine) throws Exception {
+    	String sql = "ALTER TABLE " + tableName + "\n";
+    	boolean modified = false;    	
+		switch (sqlEngine) {
+			case SQLEngine.MYSQL:
+				if (getChildrenCount() > 0) {
+					for (int i = 0 ; i < getChildrenCount(); i++) {
+						Column col = (Column)getChildAt(i);
+						if (col.isAltered()) {
+							if (modified) {
+								sql += ",\n";
+							}
+							modified = true;
+							sql += "\t\tMODIFY COLUMN ";
+							sql += col.getColumnName() + " " + col.getTypeName();
+							//TODO HACK replace this
+							if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
+									col.getTypeName().equalsIgnoreCase("INT")) {
+								sql += "(" + col.getColumnSize() + ") ";
+							}
+						}
+					}
+				}
+				break;
+			case SQLEngine.POSTGRES:
+				if (getChildrenCount() > 0) {
+					for (int i = 0 ; i < getChildrenCount(); i++) {
+						Column col = (Column)getChildAt(i);
+						if (col.isAltered()) {
+							if (modified) {
+								sql += ",\n";
+							}
+							modified = true;
+							sql += "\t\tALTER COLUMN ";
+							sql += col.getColumnName() + " SET DATA TYPE " + col.getTypeName();
+							//TODO HACK replace this
+							if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
+									col.getTypeName().equalsIgnoreCase("INT")) {
+								sql += "(" + col.getColumnSize() + ") ";
+							}
+						}
+					}
+				}
+				break;
+			default:
+				break;
+		}
+		if (modified)
+			return sql;
+		else 
+			return "";
+	}
 }

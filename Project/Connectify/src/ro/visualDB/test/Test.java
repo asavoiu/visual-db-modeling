@@ -5,10 +5,10 @@ import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.connection.IDatabaseConnection;
 import ro.visualDB.sql.connection.MySQLDatabaseConnection;
 import ro.visualDB.sql.helpers.DBInfoProcessor;
+import ro.visualDB.sql.model.Catalog;
+import ro.visualDB.sql.model.Column;
+import ro.visualDB.sql.model.Table;
 import ro.visualDB.sql.query.SQLEngine;
-import ro.visualDB.xml.TreeNode;
-import ro.visualDB.xml.XMLReader;
-import ro.visualDB.xml.XMLWriter;
 
 public class Test {
 
@@ -65,8 +65,18 @@ public class Test {
 			//XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test.xml", rmt);
 			//TreeNode readTn = XMLReader.readFromFile("C:\\Users\\Auras\\Desktop\\test.xml");
 			//XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test2.xml", readTn);
-			System.out.println(rmt.getSqlStatement(SQLEngine.MYSQL));
-			
+			//System.out.println(rmt.getSqlStatement(SQLEngine.MYSQL));
+			Catalog c = (Catalog) rmt.getChildAt(6);
+			Table test = (Table) c.getChildAt(0);
+			Column cv = (Column) test.getChildAt(1);
+			cv.setColumnSize(200);
+			cv.setAltered(true);
+			Column id = (Column) test.getChildAt(0);
+			id.setColumnSize(9);
+			//id.setTypeName("VARCHAR");
+			id.setAltered(true);
+			System.out.println(test.getModifySqlStatement(SQLEngine.MYSQL));
+			System.out.println(test.getModifySqlStatement(SQLEngine.POSTGRES));
 		} catch (Exception e){
 			e.printStackTrace();
 			AppLogger.getLogger().error("Error", e);

@@ -18,6 +18,9 @@ import ro.visualDB.sql.query.SQLElement;
 public class TreeNode implements XMLElement, SQLElement {
 	private Object value;
 	public ArrayList<TreeNode> children;
+	private boolean altered = false;
+	private boolean changed = false;
+	private boolean modified = false;
 	
 	public TreeNode() {
 		this.value = null;
@@ -119,6 +122,55 @@ public class TreeNode implements XMLElement, SQLElement {
 
 	@Override
 	public String getSqlStatement(int sqlEngine) throws Exception {
+		return "NO SLQ";
+	}
+
+	@Override
+	public void setAltered(boolean altered) {
+		this.altered = altered;
+	}
+
+	/**
+	 * If the representation of this node has changed
+	 * returns False, else True.
+	 */
+	@Override
+	public boolean isAltered() {
+		return altered;
+	}
+	
+	@Override
+	public void setChanged(boolean changed) {
+		this.changed = changed;
+	}
+
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+	
+	@Override
+	public void setModified(boolean modified) {
+		this.modified = modified;
+	}
+	
+	@Override
+	public boolean isModified() {
+		return modified;
+	}
+	
+	@Override
+	public String getAlterSqlStatement(int sqlEngine) throws Exception {
+		return "NO SLQ";
+	}
+	
+	@Override
+	public String getChangeSqlStatement(int sqlEngine) throws Exception {
+		return "NO SLQ";
+	}
+	
+	@Override
+	public String getModifySqlStatement(int sqlEngine) throws Exception {
 		return "NO SLQ";
 	}
 }
