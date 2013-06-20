@@ -4,10 +4,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
+import ro.visualDB.sql.query.SQLElement;
+import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
-public class Schema implements XMLElement{
+public class Schema extends TreeNode implements SQLElement {
 	private String schemaTerm;
 	private String schemaName;
 	private String catalogName;
@@ -43,8 +45,8 @@ public class Schema implements XMLElement{
 	public String toString() {
 		return schemaName;
 	}
-	@Override
-	public Element getDomElement(Document doc) throws Exception {
+
+	public Element createDomElement(Document doc) throws Exception {
 		Element el;
 		el = doc.createElement("schema");
 		el.setAttribute("name", getSchemaName());
@@ -52,12 +54,38 @@ public class Schema implements XMLElement{
 	}
 	
 	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el = createDomElement(doc);
+		for (TreeNode t : getChildren()) {
+			el.appendChild(t.getDomElement(doc));
+		}
+		return el;
+	}
+	
+	@Override
 	public TreeNode parseElement(String uri, String localName, String qName,
 			Attributes atts) {
-    	TreeNode tn = new TreeNode();
     	Schema newSch = new Schema();
 		newSch.setSchemaName(atts.getValue("name"));
-		tn.setValue(newSch);
-		return tn;
+		return newSch;
+	}
+	@Override
+	public String getSqlStatement(int sqlEngine) throws Exception {
+		String sql = "";
+		switch (sqlEngine) {
+			case SQLEngine.MYSQL:
+				sql = "";
+				break;
+			case SQLEngine.POSTGRES:
+				sql = "CREATE SCHEMA " + schemaName;
+				break;
+			default:
+				break;
+		}
+		for (TreeNode t : getChildren()) {
+			sql += t.getSqlStatement(sqlEngine);
+			sql += "\n";
+		}
+		return sql;
 	}
 }

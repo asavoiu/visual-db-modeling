@@ -30,12 +30,18 @@ public class XMLElementFactory {
 							.replace(File.separatorChar, '.');
 					Class<? extends Object> cls =  Class.forName(className);
 					if (!cls.isInterface()) {
+						if (cls.getSuperclass().equals(TreeNode.class)) {
+							res.put(f.getName()
+									.substring(0, f.getName().length() - 6)
+									.toLowerCase(), cls);
+						}
 						Type[] types = cls.getInterfaces();
 						for (Type t : types) {
 							if (t.equals(XMLElement.class)) {
 								res.put(f.getName()
 										.substring(0, f.getName().length() - 6)
 										.toLowerCase(), cls);
+								break;
 							}
 						}
 					}
@@ -51,12 +57,18 @@ public class XMLElementFactory {
 						.replace(File.separatorChar, '.');
 				Class<? extends Object> cls =  Class.forName(className);
 				if (!cls.isInterface()) {
+					if (cls.getSuperclass().equals(TreeNode.class)) {
+						res.put(file.getName()
+								.substring(0, file.getName().length() - 6)
+								.toLowerCase(), cls);
+					}
 					Type[] types = cls.getInterfaces();
 					for (Type t : types) {
 						if (t.equals(XMLElement.class)) {
 							res.put(file.getName()
 									.substring(0, file.getName().length() - 6)
 									.toLowerCase(), cls);
+							break;
 						}
 					}
 				}

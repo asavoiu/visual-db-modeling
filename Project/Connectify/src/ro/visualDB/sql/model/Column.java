@@ -10,7 +10,7 @@ import ro.visualDB.xml.XMLElement;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Column implements XMLElement {
+public class Column extends TreeNode {
 	private String tableCatalogName;
 
     private String tableSchemaName;
@@ -306,8 +306,8 @@ public class Column implements XMLElement {
         this.foreignKeys = foreignKeys;
     }
 
-    @Override
-	public Element getDomElement(Document doc) throws Exception {
+
+	public Element createDomElement(Document doc) throws Exception {
 		Element el;
         HashMap<Integer,String> dataTypes = new DataTypeValues().getDataTypes();
 		el = doc.createElement("column");
@@ -329,10 +329,18 @@ public class Column implements XMLElement {
 		return el;
 	}
     
+	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el = createDomElement(doc);
+		for (TreeNode t : getChildren()) {
+			el.appendChild(t.getDomElement(doc));
+		}
+		return el;
+	}
+    
     @Override
     public TreeNode parseElement(String uri, String localName, String qName,
     		Attributes atts) {
-    	TreeNode tn = new TreeNode();
 		Column newCol = new Column();
 		newCol.setColumnName(atts.getValue("name"));
 		String fkString = atts.getValue("foreignKey");
@@ -352,7 +360,6 @@ public class Column implements XMLElement {
 		}
 		newCol.setIsAutoIncrement(atts.getValue("isAutoIncrement"));
 		newCol.setIsNullable(atts.getValue("isNullable"));
-		tn.setValue(newCol);
-		return tn;
+		return newCol;
     }
 }

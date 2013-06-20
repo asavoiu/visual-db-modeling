@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
 import ro.visualDB.logging.AppLogger;
+import ro.visualDB.sql.query.SQLElement;
 
 /** TreeNode class containing
  * the Value of the current node
@@ -14,9 +15,9 @@ import ro.visualDB.logging.AppLogger;
  * or an empty ArrayList 
  * if there are none.
  **/
-public class TreeNode implements XMLElement {
+public class TreeNode implements XMLElement, SQLElement {
 	private Object value;
-	private ArrayList<TreeNode> children;
+	public ArrayList<TreeNode> children;
 	
 	public TreeNode() {
 		this.value = null;
@@ -114,5 +115,10 @@ public class TreeNode implements XMLElement {
 			AppLogger.getLogger().info("Tree node Value not instance of XMLElement");
 			return null;
 		}
+	}
+
+	@Override
+	public String getSqlStatement(int sqlEngine) throws Exception {
+		return "NO SLQ";
 	}
 }

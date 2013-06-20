@@ -4,6 +4,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
+import ro.visualDB.sql.query.SQLElement;
+import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
@@ -41,7 +43,7 @@ import ro.visualDB.xml.XMLElement;
  * CREATE DATABASE has the synonym CREATE SCHEMA.
  */
 
-public class Catalog implements XMLElement {
+public class Catalog extends TreeNode {
 	private String catalogTerm;
 	private String catalogName;
 
@@ -71,22 +73,49 @@ public class Catalog implements XMLElement {
 		return catalogName;
 	}
 
-	@Override
-	public Element getDomElement(Document doc) throws Exception {
+	public Element createDomElement(Document doc) throws Exception {
 		Element el;
 		el = doc.createElement("catalog");
 		el.setAttribute("name", getCatalogName());
+		return el;
+	}
+	
+	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el = createDomElement(doc);
+		for (TreeNode t : getChildren()) {
+			el.appendChild(t.getDomElement(doc));
+		}
 		return el;
 	}
 
 	@Override
 	public TreeNode parseElement(String uri, String localName, String qName,
 			Attributes atts) {
-		TreeNode tn = new TreeNode();
 		Catalog newCat = new Catalog();
 		newCat.setCatalogName(atts.getValue("name"));
-		tn.setValue(newCat);
-		return tn;
+		return newCat;
+	}
+
+	@Override
+	public String getSqlStatement(int sqlEngine) throws Exception {
+		String sql = "";
+		switch (sqlEngine) {
+			case SQLEngine.MYSQL:
+					sql =  "CREATE DATABASE " + catalogName + ";";
+					break;
+			case SQLEngine.POSTGRES:
+					sql =  "CREATE DATABASE " + catalogName + ";";
+					break;
+			default:
+					break;
+		}
+		sql += "\n";
+		for (TreeNode t : getChildren()) {
+			sql += t.getSqlStatement(sqlEngine);
+			sql += "\n";
+		}
+		return sql;
 	}
 	
 }

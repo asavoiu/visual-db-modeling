@@ -5,6 +5,7 @@ import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.connection.IDatabaseConnection;
 import ro.visualDB.sql.connection.MySQLDatabaseConnection;
 import ro.visualDB.sql.helpers.DBInfoProcessor;
+import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLReader;
 import ro.visualDB.xml.XMLWriter;
@@ -53,9 +54,7 @@ public class Test {
 			rmt.setPassword("");
 			rmt.setDatabase("pw");
 			
-			TreeNode tn = new TreeNode();
-			tn.setValue(rmt);
-			dbip.buildTreeForRemoteConnectionTreeNode(tn);
+			dbip.buildTreeForRemoteConnectionTreeNode(rmt);
 			
             //export scriptul bazei
             //PostgreScriptWriter postgreScriptWriter = new PostgreScriptWriter(tn,"C:\\Users\\Auras\\Desktop\\script.sql");
@@ -63,9 +62,10 @@ public class Test {
 
 //			tn.print(2);
             //Tree tree = new Tree(tn);
-			XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test.xml", tn);
-			TreeNode readTn = XMLReader.readFromFile("C:\\Users\\Auras\\Desktop\\test.xml");
-			XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test2.xml", readTn);
+			//XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test.xml", rmt);
+			//TreeNode readTn = XMLReader.readFromFile("C:\\Users\\Auras\\Desktop\\test.xml");
+			//XMLWriter.writeToFile("C:\\Users\\Auras\\Desktop\\test2.xml", readTn);
+			System.out.println(rmt.getSqlStatement(SQLEngine.MYSQL));
 			
 		} catch (Exception e){
 			e.printStackTrace();

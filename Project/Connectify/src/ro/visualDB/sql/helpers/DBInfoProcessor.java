@@ -452,44 +452,40 @@ public class DBInfoProcessor {
 	}
 
 	public TreeNode buildTreeForTableNode(Table tb) throws SQLException {
-		TreeNode treeNodeTb = new TreeNode(tb);
 		ArrayList<Column> clms = getColumns(tb.getTableCatalogName(), tb.getTableName());
 		for (Column clm : clms) {
-			TreeNode treeNodeClm = new TreeNode(clm);
-			treeNodeTb.addChild(treeNodeClm);
+			tb.addChild(clm);
 		}
-		return treeNodeTb;
+		return tb;
 	}
 
 	public TreeNode buildTreeForSchemaNode(Schema sc) throws SQLException {
-		TreeNode treeNodeSc = new TreeNode(sc);
 		ArrayList<Table> ts = getTables(sc.getCatalogName(), sc.getSchemaName());
 		for (Table tb : ts) {
 			TreeNode treeNodeTb = buildTreeForTableNode(tb);
-			treeNodeSc.addChild(treeNodeTb);
+			sc.addChild(treeNodeTb);
 		}
-		return treeNodeSc;
+		return sc;
 	}
 
 	public TreeNode buildTreeForCatalogNode(Catalog ct) throws SQLException {
-		TreeNode treeNodeCt = new TreeNode(ct);
 		ArrayList<Schema> schemas = getSchemas(ct.getCatalogName());
 		if (schemas.size() != 0) {
 			for (Schema sc : schemas) {
                 if(!(sc.getSchemaName().equals("information_schema")) && !(sc.getSchemaName().equals("pg_catalog")) && !(sc.getSchemaName().equals("public"))){
                     sc.setCatalogName(ct.getCatalogName());
                     TreeNode treeNodeSc = buildTreeForSchemaNode(sc);
-                    treeNodeCt.addChild(treeNodeSc);
+                    ct.addChild(treeNodeSc);
                 }
 			}
 		} else {
             ArrayList<Table> ts = getTables(ct.getCatalogName());
 			for (Table tb : ts) {
 				TreeNode treeNodeTb = buildTreeForTableNode(tb);
-				treeNodeCt.addChild(treeNodeTb);
+				ct.addChild(treeNodeTb);
 			}
 		}
-		return treeNodeCt;
+		return ct;
 	}
 
 	public TreeNode buildTreeForRemoteConnection() throws SQLException{

@@ -4,10 +4,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
+import ro.visualDB.sql.query.SQLElement;
+import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
-public class Table implements XMLElement {
+public class Table extends TreeNode implements SQLElement {
 	/* TABLE_CAT  => table catalog (may be null) */
 	String tableCatalogName = null;
 	/* TABLE_SCHEM  => table schema (may be null) */
@@ -98,8 +100,8 @@ public class Table implements XMLElement {
 	public String toString() {
 		return tableName;
 	}
-	@Override
-	public Element getDomElement(Document doc) throws Exception {
+	
+	public Element createDomElement(Document doc) throws Exception {
 		Element el;
 		el = doc.createElement("table");
 		el.setAttribute("name", getTableName());
@@ -108,13 +110,69 @@ public class Table implements XMLElement {
 	}
 	
 	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el = createDomElement(doc);
+		for (TreeNode t : getChildren()) {
+			el.appendChild(t.getDomElement(doc));
+		}
+		return el;
+	}
+	
+	@Override
 	public TreeNode parseElement(String uri, String localName, String qName,
 			Attributes atts) {
-    	TreeNode tn = new TreeNode();
     	Table newTbl = new Table();
     	newTbl.setTableName(atts.getValue("name"));
     	newTbl.setTableType(atts.getValue("type"));
-		tn.setValue(newTbl);
-		return tn;
+		return newTbl;
+	}
+	
+	@Override
+	public String getSqlStatement(int sqlEngine) throws Exception {
+		String sql = "";
+		switch (sqlEngine) {
+			case SQLEngine.MYSQL:
+				if (getChildrenCount() > 0) {
+					sql = "CREATE TABLE " + tableName;
+					sql += " ( \n";
+					for (int i = 0 ; i < getChildrenCount(); i++) { 
+						Column col = (Column)getChildAt(i);
+						sql += "\t\t";
+						sql += col.getColumnName() + " " + col.getTypeName();
+						//TODO HACK replace this
+						if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
+								col.getTypeName().equalsIgnoreCase("INT")) {
+							sql += "(" + col.getColumnSize() + ") ";
+						}
+						if (i < getChildrenCount() - 1) {
+							sql += ",\n";
+						}
+					}
+					sql += " );";
+				}
+				break;
+			case SQLEngine.POSTGRES:
+				if (getChildrenCount() > 0) {
+					sql = "CREATE TABLE " + tableName;
+					sql += " ( \n";
+					for (int i = 0 ; i < getChildrenCount(); i++) { 
+						Column col = (Column)getChildAt(i);
+						sql += "\t\t";
+						sql += col.getColumnName() + " " + col.getTypeName();
+						//TODO HACK replace this
+						if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
+								col.getTypeName().equalsIgnoreCase("INT")) {
+							sql += "(" + col.getColumnSize() + ") ";
+						}
+						if (i < getChildrenCount() - 1) {
+							sql += ",\n";
+						}
+					}
+					sql += " );";
+				}
+			default:
+				break;
+		}
+		return sql;
 	}
 }

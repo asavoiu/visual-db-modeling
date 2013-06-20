@@ -84,6 +84,7 @@ public class XMLContentHandler implements ContentHandler {
 			}
 		} else {
 			AppLogger.logger.error("Element Not found/recognized");
+			System.out.println("Element Not found/recognized");
 			// TODO we add a stub tree node to avoid exception when
 			// doing queue.removeLast() in endElement() callback
 			TreeNode tn = new TreeNode("Unknown");

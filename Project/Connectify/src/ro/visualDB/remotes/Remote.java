@@ -4,10 +4,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
+import ro.visualDB.sql.query.SQLElement;
+import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
-public class Remote implements XMLElement {
+public class Remote extends TreeNode {
 	private String name;
 	private String host;
 	private String port;
@@ -51,8 +53,8 @@ public class Remote implements XMLElement {
 	public void setDatabase(String database) {
 		this.database = database;
 	}
-	@Override
-	public Element getDomElement(Document doc) throws Exception {
+	
+	public Element createDomElement(Document doc) throws Exception {
 		Element el;
 		el = doc.createElement("remote");
 		el.setAttribute("name", getName());
@@ -63,10 +65,19 @@ public class Remote implements XMLElement {
 		el.setAttribute("database", getDatabase());
 		return el;
 	}
+	
+	@Override
+	public Element getDomElement(Document doc) throws Exception {
+		Element el = createDomElement(doc);
+		for (TreeNode t : getChildren()) {
+			el.appendChild(t.getDomElement(doc));
+		}
+		return el;
+	}
+	
 	@Override
 	public TreeNode parseElement(String uri, String localName, String qName,
 			Attributes atts) {
-		TreeNode tn = new TreeNode();
     	Remote rmt = new Remote();
     	rmt.setName(atts.getValue("name"));
     	rmt.setHost(atts.getValue("host"));
@@ -74,8 +85,17 @@ public class Remote implements XMLElement {
     	rmt.setUser(atts.getValue("user"));
     	rmt.setPassword(atts.getValue("password"));
     	rmt.setDatabase(atts.getValue("database"));
-		tn.setValue(rmt);
-		return tn;
+		return rmt;
+	}
+	
+	@Override
+	public String getSqlStatement(int sqlEngine) throws Exception {
+		String sql = "";
+		for (TreeNode t : getChildren()) {
+			sql += t.getSqlStatement(sqlEngine);
+			sql += "\n";
+		}
+		return sql;
 	}
 	
 }
