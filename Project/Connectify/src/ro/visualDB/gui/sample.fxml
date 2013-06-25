@@ -76,27 +76,32 @@
           <menus>
             <Menu mnemonicParsing="false" text="File">
               <items>
-                <MenuItem mnemonicParsing="false" text="TODO" />
+                <MenuItem mnemonicParsing="false" text="Add a new remote" />
+                <MenuItem mnemonicParsing="false" text="Import Schema" />
+                <MenuItem mnemonicParsing="false" text="Export to script" />
+                <MenuItem mnemonicParsing="false" text="Exit" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
               <items>
-                <MenuItem mnemonicParsing="false" text="TODO" />
+                <MenuItem mnemonicParsing="false" text="Delete" />
+                <MenuItem mnemonicParsing="false" text="Refresh" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="View">
               <items>
-                <MenuItem mnemonicParsing="false" text="TODO" />
+                <MenuItem mnemonicParsing="false" text="Statistics" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Tools">
               <items>
-                <MenuItem mnemonicParsing="false" text="TODO" />
+                <MenuItem mnemonicParsing="false" text="Versioning system" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
-                <MenuItem mnemonicParsing="false" text="TODO" />
+                <MenuItem mnemonicParsing="false" text="GIT Home Page" onAction="#openGitPage"/>
+                <MenuItem mnemonicParsing="false" text="About" onAction="#openAboutPage"/>
               </items>
             </Menu>
           </menus>
@@ -111,7 +116,7 @@
           </graphic>
         </Button>
         <!--Import-->
-        <Button id="button_" fx:id="button_import" layoutX="152.0" layoutY="36.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+        <Button id="button_" fx:id="button_import" layoutX="152.0" layoutY="36.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0" onAction="#openRemote">
           <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0">
               <Image url="@icons/import.png" preserveRatio="false" smooth="false" />
@@ -119,7 +124,7 @@
           </graphic>
         </Button>
         <!--Export-->
-        <Button fx:id="button_export" layoutX="279.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+        <Button fx:id="button_export" layoutX="279.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0" onAction="#openExportWindow">
           <graphic>
             <ImageView fitHeight="100.0" fitWidth="100.0">
               <Image url="@icons/export.png" preserveRatio="false" smooth="false" />
@@ -127,7 +132,7 @@
           </graphic>
         </Button>
         <!--Version Control-->
-        <Button fx:id="button_version" layoutX="406.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+        <Button fx:id="button_version" layoutX="406.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0" onAction="#openVersioningWindow">
           <graphic>
             <ImageView fitHeight="100.0" fitWidth="100.0">
               <Image url="@icons/version.png" preserveRatio="false" smooth="false" />
@@ -151,7 +156,7 @@
           </graphic>
         </Button>
         <!--Users-->
-        <Button fx:id="button_users" layoutX="785.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+        <Button fx:id="button_users" layoutX="785.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0" onAction="#openUsersWindow">
           <graphic>
             <ImageView fitHeight="100.0" fitWidth="100.0">
               <Image url="@icons/users.png" preserveRatio="false" smooth="false" />
@@ -159,7 +164,7 @@
           </graphic>
         </Button>
         <!--Statistics-->
-        <Button fx:id="button_statistics" layoutX="910.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0">
+        <Button fx:id="button_statistics" layoutX="910.0" layoutY="37.0" minHeight="110.0" minWidth="110.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="110.0" onAction="#openStatisticsWindow">
           <graphic>
             <ImageView fitHeight="100.0" fitWidth="100.0">
               <Image url="@icons/statistics.png" preserveRatio="false" smooth="false" />

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane alignment="CENTER" hgap="10.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="ro.visualDB.gui.ExportScriptController">
+  <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="181.0" prefWidth="379.0">
+    <children>
+      <Button layoutX="292.0" layoutY="141.0" mnemonicParsing="false" onAction="#saveRemote" text="Export" />
+      <ChoiceBox layoutX="182.0" layoutY="82.0" prefWidth="133.0">
+        <items>
+          <FXCollections fx:factory="observableArrayList">
+            <String fx:value="PostgreSQL" />
+            <String fx:value="MySQL" />
+          </FXCollections>
+        </items>
+      </ChoiceBox>
+      <Label layoutX="163.0" layoutY="35.0" text="Please choose script type">
+        <font>
+          <Font size="15.0" />
+        </font>
+      </Label>
+      <ImageView id="export.png" layoutY="6.0">
+        <image>
+          <Image url="@../icons/export.png" preserveRatio="true" smooth="true" />
+        </image>
+      </ImageView>
+    </children>
+  </AnchorPane>
+</GridPane>

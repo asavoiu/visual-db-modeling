@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane alignment="CENTER" hgap="10.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="ro.visualDB.gui.NewConnectionController">
+  <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="461.0" prefWidth="448.0">
+    <children>
+      <Button layoutX="285.0" layoutY="413.0" mnemonicParsing="false" onAction="#okButton" text="Ok" />
+      <Button layoutX="366.0" layoutY="413.0" mnemonicParsing="false" onAction="#closeWindow" text="Cancel" />
+      <Label layoutX="32.0" layoutY="52.0" text="Host">
+        <font>
+          <Font size="15.0" fx:id="x1" />
+        </font>
+      </Label>
+      <Label font="$x1" layoutX="32.0" layoutY="98.0" text="Port" />
+      <Label font="$x1" layoutX="32.0" layoutY="141.0" text="User" />
+      <Label font="$x1" layoutX="32.0" layoutY="182.0" text="Password" />
+      <Label font="$x1" layoutX="32.0" layoutY="224.0" text="Databse Name" />
+      <Label font="$x1" layoutX="32.0" layoutY="263.0" text="SSL" />
+      <PasswordField fx:id="password" layoutX="205.0" layoutY="181.0" prefWidth="200.0" />
+      <TextField fx:id="hostName" layoutX="205.0" layoutY="52.0" prefWidth="200.0" />
+      <TextField fx:id="port" layoutX="205.0" layoutY="97.0" prefWidth="200.0" />
+      <TextField fx:id="username" layoutX="205.0" layoutY="140.0" prefWidth="200.0" />
+      <TextField fx:id="databaseName" layoutX="205.0" layoutY="223.0" prefWidth="200.0" />
+      <ImageView id="sync.png" layoutX="31.0" layoutY="307.0">
+        <image>
+          <Image url="@../icons/sync.png" preserveRatio="true" smooth="true" />
+        </image>
+      </ImageView>
+      <ComboBox fx:id="dbType" layoutX="232.0" layoutY="342.0">
+        <items>
+          <FXCollections fx:factory="observableArrayList">
+            <String fx:value="PostgreSQL" />
+            <String fx:value="MySQL" />
+          </FXCollections>
+        </items>
+      </ComboBox>
+      <Label font="$x1" layoutX="176.0" layoutY="313.0" text="Select DB type" />
+      <CheckBox fx:id="sslActive" layoutX="205.0" layoutY="265.0" mnemonicParsing="false" />
+    </children>
+  </AnchorPane>
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+</GridPane>
