@@ -4,6 +4,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
+import com.sun.corba.se.pept.transport.InboundConnectionCache;
+
+import ro.visualDB.sql.connection.IDatabaseConnection;
+import ro.visualDB.sql.connection.MySQLDatabaseConnection;
+import ro.visualDB.sql.connection.PostgreSQLDatabaseConnection;
 import ro.visualDB.sql.query.SQLElement;
 import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
@@ -16,6 +21,7 @@ public class Remote extends TreeNode {
 	private String user;
 	private String password;
 	private String database;
+	private int databaseEngine;
 	
 	public String getHost() {
 		return host;
@@ -63,6 +69,7 @@ public class Remote extends TreeNode {
 		el.setAttribute("user", getUser());
 		el.setAttribute("password", getPassword());
 		el.setAttribute("database", getDatabase());
+		el.setAttribute("databaseEngine", "" + getDatabaseEngine());
 		return el;
 	}
 	
@@ -85,6 +92,7 @@ public class Remote extends TreeNode {
     	rmt.setUser(atts.getValue("user"));
     	rmt.setPassword(atts.getValue("password"));
     	rmt.setDatabase(atts.getValue("database"));
+    	rmt.setDatabaseEngine(Integer.parseInt(atts.getValue("databaseEngine")));
 		return rmt;
 	}
 	
@@ -98,4 +106,41 @@ public class Remote extends TreeNode {
 		return sql;
 	}
 	
+	@Override
+	public String getModifySqlStatement(int sqlEngine) throws Exception {
+		String sql = "";
+		for (TreeNode t : getChildren()) {
+			sql += t.getModifySqlStatement(sqlEngine);
+			sql += "\n";
+		}
+		return sql;
+	}
+	
+	public int getDatabaseEngine() {
+		return databaseEngine;
+	}
+	
+	public void setDatabaseEngine(int databaseEngine) {
+		this.databaseEngine = databaseEngine;
+	}
+	
+	public IDatabaseConnection getConnection() throws Exception {
+		switch (databaseEngine) {
+			case SQLEngine.MYSQL:
+				return new MySQLDatabaseConnection( host,
+													port,
+													user,
+													password,
+													database);
+			case SQLEngine.POSTGRES:
+				return new PostgreSQLDatabaseConnection( host,
+														 port,
+														 user,
+														 password,
+														 database,
+														 true);
+			default:
+				return null;
+		}
+	}
 }

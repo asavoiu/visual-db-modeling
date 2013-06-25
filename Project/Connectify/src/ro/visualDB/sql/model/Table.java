@@ -140,8 +140,23 @@ public class Table extends TreeNode implements SQLElement {
 						sql += "\t\t";
 						sql += col.getColumnName() + " " + col.getTypeName();
 						//TODO HACK replace this
-						if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
-								col.getTypeName().equalsIgnoreCase("INT")) {
+						if (col.getTypeName().equalsIgnoreCase("BIT") ||
+								col.getTypeName().equalsIgnoreCase("TINYINT") ||
+								col.getTypeName().equalsIgnoreCase("SMALLINT") ||
+								col.getTypeName().equalsIgnoreCase("MEDIUMINT") ||
+								col.getTypeName().equalsIgnoreCase("INT") ||
+								col.getTypeName().equalsIgnoreCase("INTEGER") ||
+								col.getTypeName().equalsIgnoreCase("BIGINT") ||
+								col.getTypeName().equalsIgnoreCase("REAL") ||
+								col.getTypeName().equalsIgnoreCase("DOUBLE") ||
+								col.getTypeName().equalsIgnoreCase("FLOAT") ||
+								col.getTypeName().equalsIgnoreCase("DECIMAL") ||
+								col.getTypeName().equalsIgnoreCase("NUMERIC") ||
+								col.getTypeName().equalsIgnoreCase("CHAR") ||
+								col.getTypeName().equalsIgnoreCase("VARCHAR") ||
+								col.getTypeName().equalsIgnoreCase("BINARY") ||
+								col.getTypeName().equalsIgnoreCase("VARBINARY")
+								) {
 							sql += "(" + col.getColumnSize() + ") ";
 						}
 						if (i < getChildrenCount() - 1) {
@@ -193,8 +208,23 @@ public class Table extends TreeNode implements SQLElement {
 							sql += "\t\tMODIFY COLUMN ";
 							sql += col.getColumnName() + " " + col.getTypeName();
 							//TODO HACK replace this
-							if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
-									col.getTypeName().equalsIgnoreCase("INT")) {
+							if (col.getTypeName().equalsIgnoreCase("BIT") ||
+									col.getTypeName().equalsIgnoreCase("TINYINT") ||
+									col.getTypeName().equalsIgnoreCase("SMALLINT") ||
+									col.getTypeName().equalsIgnoreCase("MEDIUMINT") ||
+									col.getTypeName().equalsIgnoreCase("INT") ||
+									col.getTypeName().equalsIgnoreCase("INTEGER") ||
+									col.getTypeName().equalsIgnoreCase("BIGINT") ||
+									col.getTypeName().equalsIgnoreCase("REAL") ||
+									col.getTypeName().equalsIgnoreCase("DOUBLE") ||
+									col.getTypeName().equalsIgnoreCase("FLOAT") ||
+									col.getTypeName().equalsIgnoreCase("DECIMAL") ||
+									col.getTypeName().equalsIgnoreCase("NUMERIC") ||
+									col.getTypeName().equalsIgnoreCase("CHAR") ||
+									col.getTypeName().equalsIgnoreCase("VARCHAR") ||
+									col.getTypeName().equalsIgnoreCase("BINARY") ||
+									col.getTypeName().equalsIgnoreCase("VARBINARY")
+									) {
 								sql += "(" + col.getColumnSize() + ") ";
 							}
 						}
