@@ -2,6 +2,7 @@ package ro.visualDB.api;
 
 import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.helpers.DBInfoProcessor;
+import ro.visualDB.versioning.Versioning;
 import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLReader;
 import ro.visualDB.xml.XMLWriter;
@@ -28,5 +29,15 @@ public class Api {
 	
 	public static String getModifySqlStatement(TreeNode treeNode, int engine) throws Exception {
 		return treeNode.getModifySqlStatement(engine);
+	}
+	
+	public static TreeNode getTreeWithFlags(String xmlSourceVersionFile,
+			String xmlDestVersionFile) throws Exception {
+		return Versioning.getTreeWithFlags(xmlSourceVersionFile, xmlDestVersionFile);
+	}
+	
+	public static TreeNode getTreeWithFlags(TreeNode sourceNode,
+			TreeNode destNode) throws Exception {
+		return Versioning.getTreeWithFlags(sourceNode, destNode);
 	}
 }

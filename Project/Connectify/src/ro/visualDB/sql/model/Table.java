@@ -259,4 +259,23 @@ public class Table extends TreeNode implements SQLElement {
 		else 
 			return "";
 	}
+    
+    @Override
+    public boolean equalsName(TreeNode tn) {
+    	if (tn instanceof Table) {
+			return ((Table)tn).getTableName().equals(getTableName());
+		} else {
+			return false;
+		}
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if (obj instanceof Table) {
+    		Table tn = (Table)obj;
+    		return tableType.equals(tn.tableType);
+    	} else {
+    		return false;
+    	}
+    }
 }

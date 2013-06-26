@@ -1,6 +1,7 @@
 package ro.visualDB.xml;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,9 +19,29 @@ import ro.visualDB.sql.query.SQLElement;
 public class TreeNode implements XMLElement, SQLElement {
 	private Object value;
 	public ArrayList<TreeNode> children;
+	// ALTER is used when TABLE or COLUMN
+	// properties have changed
 	private boolean altered = false;
+	// CHANGE is used when COLUMN description
+	// has changed (including name)
 	private boolean changed = false;
+	// like CHANGE but only the description
+	// changes(NULL/NOT NULL/TYPE etc.) but
+	// not the name
 	private boolean modified = false;
+	
+	/** For versioning **/
+	// when a TreeNode is detected as a new node
+	// the Versioning Module sets this flag to true
+	private boolean added = false;
+	// when a TreeNode is detected as removed
+	// the Versioning Module sets this flag to true
+	private boolean deleted = false;
+	// when a TreeNode's properties have changed
+	// the Versioning Module sets this flag to true
+	// Example: a Column is altered from NOT NULL to NULL 
+	private boolean dirty = false;
+
 	
 	public TreeNode() {
 		this.value = null;
@@ -34,6 +55,10 @@ public class TreeNode implements XMLElement, SQLElement {
 	
 	public void addChild(TreeNode child) {
 		children.add(child);
+	}
+	
+	public void addChildren(List<TreeNode> chlds) {
+		children.addAll(chlds);
 	}
 	
 	public int getChildrenCount() {
@@ -172,5 +197,33 @@ public class TreeNode implements XMLElement, SQLElement {
 	@Override
 	public String getModifySqlStatement(int sqlEngine) throws Exception {
 		return "NO SLQ";
+	}
+
+	public boolean isAdded() {
+		return added;
+	}
+
+	public void setAdded(boolean added) {
+		this.added = added;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+	
+	public boolean equalsName(TreeNode tn) {
+		return false;
 	}
 }

@@ -88,4 +88,23 @@ public class Schema extends TreeNode implements SQLElement {
 		}
 		return sql;
 	}
+	
+	@Override
+	public boolean equalsName(TreeNode tn) {
+		if (tn instanceof Schema) {
+			return ((Schema)tn).getSchemaName().equals(getSchemaName());
+		} else {
+			return false;
+		}
+	}
+	
+	//TODO ?? modify this
+	@Override
+	public boolean equals(Object tn) {
+		if (tn instanceof Schema) {
+			return ((Schema)tn).getSchemaName().equals(getSchemaName());
+		} else {
+			return false;
+		}
+	}
 }

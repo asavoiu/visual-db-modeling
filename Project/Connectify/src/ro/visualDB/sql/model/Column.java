@@ -326,6 +326,8 @@ public class Column extends TreeNode {
         //el.setAttribute("dataType", dataTypes.get(Integer.valueOf(getDataType())));
         el.setAttribute("isAutoIncrement", getIsAutoIncrement());
 		el.setAttribute("isNullable", getIsNullable());
+		
+		el.setAttribute("ordinalPosition", "" + getOrdinalPosition());
 		return el;
 	}
     
@@ -360,6 +362,35 @@ public class Column extends TreeNode {
 		}
 		newCol.setIsAutoIncrement(atts.getValue("isAutoIncrement"));
 		newCol.setIsNullable(atts.getValue("isNullable"));
+		newCol.setOrdinalPosition(Integer.parseInt(atts.getValue("ordinalPosition")));
 		return newCol;
+    }
+    
+    @Override
+    public boolean equalsName(TreeNode tn) {
+    	if (tn instanceof Column) {
+			return ((Column)tn).getColumnName().equals(getColumnName());
+		} else {
+			return false;
+		}
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if (obj instanceof Column) {
+    		Column tn = (Column)obj;
+    		if (isNullable.equals(tn.isNullable) &&
+    			isAutoIncrement.equals(tn.isAutoIncrement) &&
+    			ordinalPosition == tn.ordinalPosition &&
+    			primaryKey == tn.primaryKey &&
+    			foreignKey == tn.foreignKey &&
+    			(foreignKey == false || (foreignKey == true && foreignKeys.equals(tn.getForeignKeys())))
+    			) {
+    			return true;
+    		}
+    		return false;
+    	} else {
+    		return false;
+    	}
     }
 }

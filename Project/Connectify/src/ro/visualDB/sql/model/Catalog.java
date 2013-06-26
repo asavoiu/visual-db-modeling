@@ -117,5 +117,22 @@ public class Catalog extends TreeNode {
 		}
 		return sql;
 	}
+
+	@Override
+	public boolean equalsName(TreeNode tn) {
+		if (tn instanceof Catalog) {
+			return ((Catalog)tn).getCatalogName().equals(getCatalogName());
+		} else {
+			return false;
+		}
+	}
 	
+	@Override
+	public boolean equals(Object tn) {
+		if (tn instanceof Catalog) {
+			return ((Catalog)tn).getCatalogName().equals(getCatalogName());
+		} else {
+			return false;
+		}
+	}
 }

@@ -1,14 +1,14 @@
 package ro.visualDB.sql.model;
 
 public class ForeignKeys {
-    private String primaryKeyCatalogName;
-    private String primaryKeySchemaName;
-    private String primaryKeyTableName;
-    private String primaryKeyColumnName;
-    private String foreignKeyCatalogName;
-    private String foreignKeySchemaName;
-    private String foreignKeyTableName;
-    private String foreignKeyColumnName;
+    private String primaryKeyCatalogName = "";
+    private String primaryKeySchemaName = "";
+    private String primaryKeyTableName = "";
+    private String primaryKeyColumnName = "";
+    private String foreignKeyCatalogName = "";
+    private String foreignKeySchemaName = "";
+    private String foreignKeyTableName = "";
+    private String foreignKeyColumnName = "";
 
     public String getPrimaryKeyCatalogName() {
         return primaryKeyCatalogName;
@@ -72,5 +72,22 @@ public class ForeignKeys {
 
     public void setForeignKeyColumnName(String foreignKeyColumnName) {
         this.foreignKeyColumnName = foreignKeyColumnName;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if (obj instanceof ForeignKeys) {
+    		ForeignKeys fks = (ForeignKeys)obj;
+    		return  primaryKeyCatalogName.equals(fks.primaryKeyCatalogName) &&
+    				primaryKeySchemaName.equals(fks.primaryKeySchemaName) &&
+    	    		primaryKeyTableName.equals(fks.primaryKeyTableName) &&
+    	    		primaryKeyColumnName.equals(fks.primaryKeyColumnName) &&
+		    	    foreignKeyCatalogName.equals(fks.foreignKeyCatalogName) &&
+		    	    foreignKeySchemaName.equals(fks.foreignKeySchemaName) &&
+		    	    foreignKeyTableName.equals(fks.foreignKeyTableName) &&
+		    	    foreignKeyColumnName.equals(fks.foreignKeyColumnName);
+    	} else {
+    		return false;
+    	}
     }
 }
