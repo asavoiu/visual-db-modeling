@@ -34,14 +34,15 @@ public class XMLElementFactory {
 							res.put(f.getName()
 									.substring(0, f.getName().length() - 6)
 									.toLowerCase(), cls);
-						}
-						Type[] types = cls.getInterfaces();
-						for (Type t : types) {
-							if (t.equals(XMLElement.class)) {
-								res.put(f.getName()
-										.substring(0, f.getName().length() - 6)
-										.toLowerCase(), cls);
-								break;
+						} else {
+							Type[] types = cls.getInterfaces();
+							for (Type t : types) {
+								if (t.equals(XMLElement.class)) {
+									res.put(f.getName()
+											.substring(0, f.getName().length() - 6)
+											.toLowerCase(), cls);
+									break;
+								}
 							}
 						}
 					}
@@ -61,14 +62,15 @@ public class XMLElementFactory {
 						res.put(file.getName()
 								.substring(0, file.getName().length() - 6)
 								.toLowerCase(), cls);
-					}
-					Type[] types = cls.getInterfaces();
-					for (Type t : types) {
-						if (t.equals(XMLElement.class)) {
-							res.put(file.getName()
-									.substring(0, file.getName().length() - 6)
-									.toLowerCase(), cls);
-							break;
+					} else {
+						Type[] types = cls.getInterfaces();
+						for (Type t : types) {
+							if (t.equals(XMLElement.class)) {
+								res.put(file.getName()
+										.substring(0, file.getName().length() - 6)
+										.toLowerCase(), cls);
+								break;
+							}
 						}
 					}
 				}
