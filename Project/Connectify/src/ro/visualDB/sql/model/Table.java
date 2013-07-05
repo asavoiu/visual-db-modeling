@@ -82,26 +82,31 @@ public class Table extends TreeNode implements SQLElement {
 	}
 	
 	@Override
-	public String getSqlStatement(int sqlEngine) throws Exception {
-		String sql = "";
+	public String getCreateSqlStatement(int sqlEngine) throws Exception {
+		String sql = null;
 		switch (sqlEngine) {
 			case SQLEngine.MYSQL:
 				if (getChildrenCount() > 0) {
-					sql = "CREATE TABLE " + tableName;
+					sql = "CREATE TABLE IF NOT EXISTS " + tableName;
 					sql += " ( \n";
 					for (int i = 0 ; i < getChildrenCount(); i++) { 
 						Column col = (Column)getChildAt(i);
 						sql += "\t\t";
 						sql += col.getColumnName() + " " + col.getDataType();
-						if (col.getNumericPrecision() != 0 &&
+						if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+								col.getNumericPrecision() != 0 &&
 								col.getNumericScale() != 0) {
 							sql += "(" + col.getNumericPrecision() + "," +
 									col.getNumericScale() + ") ";
-						} else if (col.getNumericPrecision() != 0) {
+						} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+								col.getNumericPrecision() != 0) {
 							sql += "(" + col.getNumericPrecision() + ") ";
-						} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+						} else if ((col.getDataType().equalsIgnoreCase("CHAR") || col.getDataType().equalsIgnoreCase("VARCHAR")) &&
 								col.getCharacterMaximumLength() != 0) {
 							sql += "(" + col.getCharacterMaximumLength() + ") ";
+						}
+						if (col.getColumnDefault() != null ) {
+							sql += " DEFAULT '" + col.getColumnDefault() + "'";
 						}
 						if (i < getChildrenCount() - 1) {
 							sql += ",\n";
@@ -118,15 +123,20 @@ public class Table extends TreeNode implements SQLElement {
 						Column col = (Column)getChildAt(i);
 						sql += "\t\t";
 						sql += col.getColumnName() + " " + col.getDataType();
-						if (col.getNumericPrecision() != 0 &&
+						if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+								col.getNumericPrecision() != 0 &&
 								col.getNumericScale() != 0) {
 							sql += "(" + col.getNumericPrecision() + "," +
 									col.getNumericScale() + ") ";
-						} else if (col.getNumericPrecision() != 0) {
+						} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+								col.getNumericPrecision() != 0) {
 							sql += "(" + col.getNumericPrecision() + ") ";
-						} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+						} else if ((col.getDataType().equalsIgnoreCase("CHAR") || col.getDataType().equalsIgnoreCase("VARCHAR")) &&
 								col.getCharacterMaximumLength() != 0) {
 							sql += "(" + col.getCharacterMaximumLength() + ") ";
+						}
+						if (col.getColumnDefault() != null ) {
+							sql += " DEFAULT '" + col.getColumnDefault() + "'";
 						}
 						if (i < getChildrenCount() - 1) {
 							sql += ",\n";
@@ -157,11 +167,13 @@ public class Table extends TreeNode implements SQLElement {
 							modified = true;
 							sql += "\t\tMODIFY COLUMN ";
 							sql += col.getColumnName() + " " + col.getDataType();
-							if (col.getNumericPrecision() != 0 &&
+							if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+									col.getNumericPrecision() != 0 &&
 									col.getNumericScale() != 0) {
 								sql += "(" + col.getNumericPrecision() + "," +
 										col.getNumericScale() + ") ";
-							} else if (col.getNumericPrecision() != 0) {
+							} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+									col.getNumericPrecision() != 0) {
 								sql += "(" + col.getNumericPrecision() + ") ";
 							} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
 									col.getCharacterMaximumLength() != 0) {
@@ -183,11 +195,13 @@ public class Table extends TreeNode implements SQLElement {
 							modified = true;
 							sql += "\t\tALTER COLUMN ";
 							sql += col.getColumnName() + " SET DATA TYPE " + col.getDataType();
-							if (col.getNumericPrecision() != 0 &&
+							if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+									col.getNumericPrecision() != 0 &&
 									col.getNumericScale() != 0) {
 								sql += "(" + col.getNumericPrecision() + "," +
 										col.getNumericScale() + ") ";
-							} else if (col.getNumericPrecision() != 0) {
+							} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+									col.getNumericPrecision() != 0) {
 								sql += "(" + col.getNumericPrecision() + ") ";
 							} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
 									col.getCharacterMaximumLength() != 0) {
@@ -211,7 +225,7 @@ public class Table extends TreeNode implements SQLElement {
    		switch (sqlEngine) {
    			case SQLEngine.MYSQL:
    				if (isAdded())
-   					sql = getSqlStatement(sqlEngine);
+   					sql = getCreateSqlStatement(sqlEngine);
    				else if (isDirty())
    					sql = getAlterSqlStatement(sqlEngine);
    				else
@@ -219,7 +233,7 @@ public class Table extends TreeNode implements SQLElement {
    				break;
    			case SQLEngine.POSTGRES:
    				if (isAdded())
-   					sql = getSqlStatement(sqlEngine);
+   					sql = getCreateSqlStatement(sqlEngine);
    				else if (isDirty())
    					sql = getAlterSqlStatement(sqlEngine);
    				else

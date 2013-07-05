@@ -98,22 +98,16 @@ public class Catalog extends TreeNode {
 	}
 
 	@Override
-	public String getSqlStatement(int sqlEngine) throws Exception {
-		String sql = "";
+	public String getCreateSqlStatement(int sqlEngine) throws Exception {
+		String sql = null;
 		switch (sqlEngine) {
 			case SQLEngine.MYSQL:
-					sql =  "CREATE DATABASE " + catalogName + ";";
 					break;
 			case SQLEngine.POSTGRES:
 					sql =  "CREATE DATABASE " + catalogName + ";";
 					break;
 			default:
 					break;
-		}
-		sql += "\n";
-		for (TreeNode t : getChildren()) {
-			sql += t.getSqlStatement(sqlEngine);
-			sql += "\n";
 		}
 		return sql;
 	}

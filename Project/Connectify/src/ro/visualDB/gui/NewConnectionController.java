@@ -80,13 +80,13 @@ public class NewConnectionController {
                         true
                 );
 
-                DBInfoProcessor dbip = new DBInfoProcessor(dbConn);
                 Remote rmt = new Remote();
                 rmt.setHost("instance43492.db.xeround.com");
                 rmt.setPort("8907");
                 rmt.setUser("octavyan55");
                 rmt.setPassword("q1w2e3");
                 rmt.setDatabase("");
+                DBInfoProcessor dbip = new DBInfoProcessor(rmt);
 
 //            rmt.setHost("localhost");
 //            rmt.setPort("3306");
@@ -96,7 +96,6 @@ public class NewConnectionController {
 
                 TreeNode tn = new TreeNode();
                 tn.setValue(rmt);
-                dbip.buildTreeForRemoteConnectionTreeNode(tn);
 
                 //export scriptul bazei
                 //PostgreScriptWriter postgreScriptWriter = new PostgreScriptWriter(tn,"C:\\Users\\Auras\\Desktop\\script.sql");

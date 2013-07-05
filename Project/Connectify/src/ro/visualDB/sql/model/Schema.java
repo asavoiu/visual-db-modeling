@@ -70,21 +70,17 @@ public class Schema extends TreeNode implements SQLElement {
 		return newSch;
 	}
 	@Override
-	public String getSqlStatement(int sqlEngine) throws Exception {
+	public String getCreateSqlStatement(int sqlEngine) throws Exception {
 		String sql = "";
 		switch (sqlEngine) {
 			case SQLEngine.MYSQL:
-				sql = "";
+				sql = "CREATE SCHEMA IF NOT EXISTS " + schemaName + ";";
 				break;
 			case SQLEngine.POSTGRES:
-				sql = "CREATE SCHEMA " + schemaName + ";\n";
+				sql = "CREATE SCHEMA " + schemaName + ";";
 				break;
 			default:
 				break;
-		}
-		for (TreeNode t : getChildren()) {
-			sql += t.getSqlStatement(sqlEngine);
-			sql += "\n";
 		}
 		return sql;
 	}

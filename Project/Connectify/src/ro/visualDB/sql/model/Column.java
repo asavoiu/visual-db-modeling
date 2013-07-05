@@ -249,4 +249,24 @@ public class Column extends TreeNode {
 	public void setConstraint(Constraint constraint) {
 		this.constraint = constraint;
 	}
+	@Override
+	public String getCreateSqlStatement(int sqlEngine) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String getAlterSqlStatement(int sqlEngine) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String getChangeSqlStatement(int sqlEngine) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String getModifySqlStatement(int sqlEngine) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

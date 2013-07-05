@@ -114,7 +114,6 @@ public class Cli {
 								true
 				           );
 					}
-					dbip = new DBInfoProcessor(dbConn);						
 					rmt = new Remote();
 					rmt.setHost(cmd.getOptionValue("h"));
 			        rmt.setPort(cmd.getOptionValue("p"));
@@ -123,7 +122,7 @@ public class Cli {
 					rmt.setDatabase(cmd.getOptionValue("d"));
 					rootTn = new TreeNode();
 					rootTn.setValue(rmt);
-					dbip.buildTreeForRemoteConnectionTreeNode(rootTn);
+					dbip = new DBInfoProcessor(rmt);						
 				} else {
 					System.out.println("Parameters missing. Please verify usage!");
 					return;
@@ -170,7 +169,6 @@ public class Cli {
 								true
 			            );
 					}
-					dbip = new DBInfoProcessor(dbConn);						
 	
 					rmt = new Remote();
 					rmt.setHost(cmd.getOptionValue("h"));
@@ -180,7 +178,7 @@ public class Cli {
 					rmt.setDatabase(cmd.getOptionValue("d"));
 					rootTn = new TreeNode();
 					rootTn.setValue(rmt);
-					dbip.buildTreeForRemoteConnectionTreeNode(rootTn);
+					dbip = new DBInfoProcessor(rmt);						
 				} else {
 					System.out.println("Parameters missing. Please verify usage!");
 					return;					

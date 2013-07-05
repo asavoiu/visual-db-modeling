@@ -4,15 +4,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
-import com.sun.corba.se.pept.transport.InboundConnectionCache;
-
 import ro.visualDB.sql.connection.IDatabaseConnection;
 import ro.visualDB.sql.connection.MySQLDatabaseConnection;
 import ro.visualDB.sql.connection.PostgreSQLDatabaseConnection;
-import ro.visualDB.sql.query.SQLElement;
 import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
-import ro.visualDB.xml.XMLElement;
 
 public class Remote extends TreeNode {
 	private String name;
@@ -97,13 +93,8 @@ public class Remote extends TreeNode {
 	}
 	
 	@Override
-	public String getSqlStatement(int sqlEngine) throws Exception {
-		String sql = "";
-		for (TreeNode t : getChildren()) {
-			sql += t.getSqlStatement(sqlEngine);
-			sql += "\n";
-		}
-		return sql;
+	public String getCreateSqlStatement(int sqlEngine) throws Exception {
+		return null;
 	}
 	
 	@Override

@@ -1,7 +1,7 @@
 package ro.visualDB.sql.query;
 
 public interface SQLElement {
-	public String getSqlStatement(int sqlEngine) throws Exception;
+	public String getCreateSqlStatement(int sqlEngine) throws Exception;
 	public String getAlterSqlStatement(int sqlEngine) throws Exception;
 	public String getChangeSqlStatement(int sqlEngine) throws Exception;
 	public String getModifySqlStatement(int sqlEngine) throws Exception;

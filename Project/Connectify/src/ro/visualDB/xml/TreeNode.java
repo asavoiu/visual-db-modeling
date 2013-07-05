@@ -146,7 +146,7 @@ public class TreeNode implements XMLElement, SQLElement {
 	}
 
 	@Override
-	public String getSqlStatement(int sqlEngine) throws Exception {
+	public String getCreateSqlStatement(int sqlEngine) throws Exception {
 		return "NO SLQ";
 	}
 
