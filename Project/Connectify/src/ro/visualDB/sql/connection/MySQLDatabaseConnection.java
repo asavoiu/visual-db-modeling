@@ -32,16 +32,31 @@ public class MySQLDatabaseConnection implements IDatabaseConnection {
         this.database = database;
         this.url = "jdbc:mysql://"+ host + ":" + port + "/";
      	Class.forName("com.mysql.jdbc.Driver").newInstance();
-     	this.conn = DriverManager.getConnection(url, user, password);
 	}
 	
 	@Override
 	public Connection getConnection() throws SQLException {
 		if (conn == null) {
-			throw new SQLException("Null Connection");
+			conn = DriverManager.getConnection(url, user, password);
 		} else if (conn.isClosed()) {
-			throw new SQLException("Closed Connection");
-
+			conn = DriverManager.getConnection(url, user, password);
+		} else if (!conn.isClosed()) {
+			conn.close();
+			conn = DriverManager.getConnection(url, user, password);
+		}
+		return conn;
+	}
+	
+	@Override
+	public Connection getConnection(String database) throws SQLException {
+		String url = "jdbc:mysql://"+ host + ":" + port + "/" + database;
+		if (conn == null) {
+			conn = DriverManager.getConnection(url, user, password);
+		} else if (conn.isClosed()) {
+			conn = DriverManager.getConnection(url, user, password);
+		} else if (!conn.isClosed()) {
+			conn.close();
+			conn = DriverManager.getConnection(url, user, password);
 		}
 		return conn;
 	}

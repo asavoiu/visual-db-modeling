@@ -19,7 +19,8 @@ public class PostgreSQLDatabaseConnection implements IDatabaseConnection {
     private String port;
     private String url;
     private String database;
-
+    private Properties props;
+    
     public PostgreSQLDatabaseConnection() throws Exception {
         throw new Exception("No Credentials");
     }
@@ -33,29 +34,41 @@ public class PostgreSQLDatabaseConnection implements IDatabaseConnection {
         this.password = password;
         this.database = database;
         this.url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
-
-        Class.forName("org.postgresql.Driver").newInstance();
-
-        Properties props = new Properties();
+    	props = new Properties();
         props.setProperty("user", this.user);
         props.setProperty("password", this.password);
         if (ssl) {
             props.setProperty("ssl", "true");
             props.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
         }
-
-        this.conn = DriverManager.getConnection(url, props);
+        Class.forName("org.postgresql.Driver").newInstance();
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        if (conn == null) {
-            throw new SQLException("Null Connection");
-        } else if (conn.isClosed()) {
-            throw new SQLException("Closed Connection");
-
-        }
-        return conn;
+    	if (conn == null) {
+			conn = DriverManager.getConnection(url, props);
+		} else if (conn.isClosed()) {
+			conn = DriverManager.getConnection(url, props);
+		} else if (!conn.isClosed()) {
+			conn.close();
+			conn = DriverManager.getConnection(url, props);
+		}
+		return conn;
+    }
+    
+    @Override
+    public Connection getConnection(String database) throws SQLException {
+		String url = "jdbc:mysql://"+ host + ":" + port + "/" + database;
+    	if (conn == null) {
+			conn = DriverManager.getConnection(url, props);
+		} else if (conn.isClosed()) {
+			conn = DriverManager.getConnection(url, props);
+		} else if (!conn.isClosed()) {
+			conn.close();
+			conn = DriverManager.getConnection(url, props);
+		}
+		return conn;
     }
 
     /**

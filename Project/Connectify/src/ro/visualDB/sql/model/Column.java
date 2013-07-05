@@ -7,16 +7,26 @@ import org.xml.sax.Attributes;
 import ro.visualDB.xml.TreeNode;
 import ro.visualDB.xml.XMLElement;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Column extends TreeNode {
 	private String tableCatalogName;
-
     private String tableSchemaName;
     private String tableName;
     private String columnName;
+    private int ordinalPosition;
+    private String columnDefault;
+    private String isNullable;
     private String dataType;
+    private long characterMaximumLength;
+    private long characterOctetLength;
+    private long numericPrecision;
+    private long numericScale;
+    
+    private Constraint constraint;
+    
     private String typeName;
     private int columnSize;
     private int bufferLength;
@@ -24,12 +34,8 @@ public class Column extends TreeNode {
     private int numPrecRadix;
     private int nullable;
     private String remarks;
-    private String columnDef;
     private int sqlDataType;
     private int sqlDateTimeSub;
-    private int charOctetLength;
-    private int ordinalPosition;
-    private String isNullable;
     private String scopeCatalog;
     private String scopeSchema;
     private String scopeTable;
@@ -152,17 +158,7 @@ public class Column extends TreeNode {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	/**
-	 * COLUMN_DEF String => default value for the column,
-	 * which should be interpreted as a string when the
-	 * value is enclosed in single quotes (may be null) 
-	 */
-	public String getColumnDef() {
-		return columnDef;
-	}
-	public void setColumnDef(String columnDef) {
-		this.columnDef = columnDef;
-	}
+
 	/**
 	 * SQL_DATA_TYPE int => unused
 	 */
@@ -185,11 +181,11 @@ public class Column extends TreeNode {
 	 * CHAR_OCTET_LENGTH int => for char types
 	 * the maximum number of bytes in the column 
 	 */
-	public int getCharOctetLength() {
-		return charOctetLength;
+	public long getCharacterOctetLength() {
+		return characterOctetLength;
 	}
-	public void setCharOctetLength(int charOctetLength) {
-		this.charOctetLength = charOctetLength;
+	public void setCharacterOctetLength(long charOctetLength) {
+		this.characterOctetLength = charOctetLength;
 	}
 	/**
 	 * ORDINAL_POSITION int => index of column in table (starting at 1)
@@ -393,4 +389,40 @@ public class Column extends TreeNode {
     		return false;
     	}
     }
+	public long getNumericPrecision() {
+		return numericPrecision;
+	}
+	public void setNumericPrecision(long numericPrecision) {
+		this.numericPrecision = numericPrecision;
+	}
+	public long getNumericScale() {
+		return numericScale;
+	}
+	public void setNumericScale(long numericScale) {
+		this.numericScale = numericScale;
+	}
+	
+	/**
+	 * COLUMN_DEF String => default value for the column,
+	 * which should be interpreted as a string when the
+	 * value is enclosed in single quotes (may be null) 
+	 */
+	public String getColumnDefault() {
+		return columnDefault;
+	}
+	public void setColumnDefault(String columnDefault) {
+		this.columnDefault = columnDefault;
+	}
+	public long getCharacterMaximumLength() {
+		return characterMaximumLength;
+	}
+	public void setCharacterMaximumLength(long characterMaximumLength) {
+		this.characterMaximumLength = characterMaximumLength;
+	}
+	public Constraint getConstraint() {
+		return constraint;
+	}
+	public void setConstraint(Constraint constraint) {
+		this.constraint = constraint;
+	}
 }

@@ -19,8 +19,8 @@ public class Api {
 	}
 	
 	public static TreeNode importFromRemote(Remote rmt) throws Exception {
-		DBInfoProcessor dbip = new DBInfoProcessor(rmt.getConnection());						
-		return dbip.buildTreeForRemoteConnectionTreeNode(rmt);
+		DBInfoProcessor dbip = new DBInfoProcessor(rmt);						
+		return dbip.buildTreeForRemote();
 	}
 	
 	public static String getCreateSQLScripts(TreeNode treeNode, int engine) throws Exception {

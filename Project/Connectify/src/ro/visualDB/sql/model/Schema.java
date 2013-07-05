@@ -77,7 +77,7 @@ public class Schema extends TreeNode implements SQLElement {
 				sql = "";
 				break;
 			case SQLEngine.POSTGRES:
-				sql = "CREATE SCHEMA " + schemaName;
+				sql = "CREATE SCHEMA " + schemaName + ";\n";
 				break;
 			default:
 				break;

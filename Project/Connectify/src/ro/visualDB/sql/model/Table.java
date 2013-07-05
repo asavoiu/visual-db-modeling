@@ -138,26 +138,13 @@ public class Table extends TreeNode implements SQLElement {
 					for (int i = 0 ; i < getChildrenCount(); i++) { 
 						Column col = (Column)getChildAt(i);
 						sql += "\t\t";
-						sql += col.getColumnName() + " " + col.getTypeName();
-						//TODO HACK replace this
-						if (col.getTypeName().equalsIgnoreCase("BIT") ||
-								col.getTypeName().equalsIgnoreCase("TINYINT") ||
-								col.getTypeName().equalsIgnoreCase("SMALLINT") ||
-								col.getTypeName().equalsIgnoreCase("MEDIUMINT") ||
-								col.getTypeName().equalsIgnoreCase("INT") ||
-								col.getTypeName().equalsIgnoreCase("INTEGER") ||
-								col.getTypeName().equalsIgnoreCase("BIGINT") ||
-								col.getTypeName().equalsIgnoreCase("REAL") ||
-								col.getTypeName().equalsIgnoreCase("DOUBLE") ||
-								col.getTypeName().equalsIgnoreCase("FLOAT") ||
-								col.getTypeName().equalsIgnoreCase("DECIMAL") ||
-								col.getTypeName().equalsIgnoreCase("NUMERIC") ||
-								col.getTypeName().equalsIgnoreCase("CHAR") ||
-								col.getTypeName().equalsIgnoreCase("VARCHAR") ||
-								col.getTypeName().equalsIgnoreCase("BINARY") ||
-								col.getTypeName().equalsIgnoreCase("VARBINARY")
-								) {
-							sql += "(" + col.getColumnSize() + ") ";
+						sql += col.getColumnName() + " " + col.getDataType();
+						if (col.getNumericPrecision() != 0 &&
+								col.getNumericScale() != 0) {
+							sql += "(" + col.getNumericPrecision() + "," +
+									col.getNumericScale() + ") ";
+						} else if (col.getNumericPrecision() != 0) {
+							sql += "(" + col.getNumericPrecision() + ") ";
 						}
 						if (i < getChildrenCount() - 1) {
 							sql += ",\n";
@@ -173,11 +160,13 @@ public class Table extends TreeNode implements SQLElement {
 					for (int i = 0 ; i < getChildrenCount(); i++) { 
 						Column col = (Column)getChildAt(i);
 						sql += "\t\t";
-						sql += col.getColumnName() + " " + col.getTypeName();
-						//TODO HACK replace this
-						if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
-								col.getTypeName().equalsIgnoreCase("INT")) {
-							sql += "(" + col.getColumnSize() + ") ";
+						sql += col.getColumnName() + " " + col.getDataType();
+						if (col.getNumericPrecision() != 0 &&
+								col.getNumericScale() != 0) {
+							sql += "(" + col.getNumericPrecision() + "," +
+									col.getNumericScale() + ") ";
+						} else if (col.getNumericPrecision() != 0) {
+							sql += "(" + col.getNumericPrecision() + ") ";
 						}
 						if (i < getChildrenCount() - 1) {
 							sql += ",\n";
@@ -193,11 +182,12 @@ public class Table extends TreeNode implements SQLElement {
 	
     @Override
 	public String getModifySqlStatement(int sqlEngine) throws Exception {
-    	String sql = "ALTER TABLE " + tableName + "\n";
+    	String sql = "";
     	boolean modified = false;    	
 		switch (sqlEngine) {
 			case SQLEngine.MYSQL:
 				if (getChildrenCount() > 0) {
+					sql = "ALTER TABLE " + tableCatalogName + "." + tableName + "\n";
 					for (int i = 0 ; i < getChildrenCount(); i++) {
 						Column col = (Column)getChildAt(i);
 						if (col.isAltered()) {
@@ -206,8 +196,8 @@ public class Table extends TreeNode implements SQLElement {
 							}
 							modified = true;
 							sql += "\t\tMODIFY COLUMN ";
-							sql += col.getColumnName() + " " + col.getTypeName();
-							//TODO HACK replace this
+							sql += col.getColumnName() + " " + col.getDataType();
+							/*/TODO HACK replace this
 							if (col.getTypeName().equalsIgnoreCase("BIT") ||
 									col.getTypeName().equalsIgnoreCase("TINYINT") ||
 									col.getTypeName().equalsIgnoreCase("SMALLINT") ||
@@ -226,13 +216,14 @@ public class Table extends TreeNode implements SQLElement {
 									col.getTypeName().equalsIgnoreCase("VARBINARY")
 									) {
 								sql += "(" + col.getColumnSize() + ") ";
-							}
+							}*/
 						}
 					}
 				}
 				break;
 			case SQLEngine.POSTGRES:
 				if (getChildrenCount() > 0) {
+					sql = "ALTER TABLE " + tableSchemaName + "." + tableName + "\n";
 					for (int i = 0 ; i < getChildrenCount(); i++) {
 						Column col = (Column)getChildAt(i);
 						if (col.isAltered()) {
@@ -241,12 +232,12 @@ public class Table extends TreeNode implements SQLElement {
 							}
 							modified = true;
 							sql += "\t\tALTER COLUMN ";
-							sql += col.getColumnName() + " SET DATA TYPE " + col.getTypeName();
-							//TODO HACK replace this
+							sql += col.getColumnName() + " SET DATA TYPE " + col.getDataType();
+							/*/TODO HACK replace this
 							if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
 									col.getTypeName().equalsIgnoreCase("INT")) {
 								sql += "(" + col.getColumnSize() + ") ";
-							}
+							}*/
 						}
 					}
 				}
@@ -254,12 +245,37 @@ public class Table extends TreeNode implements SQLElement {
 			default:
 				break;
 		}
-		if (modified)
-			return sql;
-		else 
-			return "";
+		
+		return sql;
 	}
     
+    
+   	public String getVersioningSqlStatement(int sqlEngine) throws Exception {
+       	String sql = "";
+       	boolean modified = false;    	
+   		switch (sqlEngine) {
+   			case SQLEngine.MYSQL:
+   				if (isAdded())
+   					sql = getSqlStatement(sqlEngine);
+   				else if (isDirty())
+   					sql = getAlterSqlStatement(sqlEngine);
+   				else
+   					sql = "";
+   				break;
+   			case SQLEngine.POSTGRES:
+   				if (isAdded())
+   					sql = getSqlStatement(sqlEngine);
+   				else if (isDirty())
+   					sql = getAlterSqlStatement(sqlEngine);
+   				else
+   					sql = "";
+   				break;
+   			default:
+   				break;
+   		}
+   		
+   		return sql;
+   	}
     @Override
     public boolean equalsName(TreeNode tn) {
     	if (tn instanceof Table) {

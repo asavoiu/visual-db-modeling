@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 public interface IDatabaseConnection {
 	public Connection getConnection() throws SQLException;
+	public Connection getConnection(String database) throws SQLException;
     public String getHost();
     public void setHost(String host);
     public String getUser();
