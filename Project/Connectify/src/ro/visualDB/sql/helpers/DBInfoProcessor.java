@@ -566,7 +566,7 @@ public class DBInfoProcessor {
 					continue; // empty databases have no tables
 				}
 				// if new table add it to the tree
-				if (!lastSchemaName.equals(rs.getString("schema_name")) ||
+				if (!lastTableName.equals(rs.getString("table_name")) ||
 						catalogChanged || 
 						schemaChanged) {
 					tbl = new Table();
