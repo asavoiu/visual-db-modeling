@@ -113,16 +113,16 @@ public class Column extends TreeNode {
 		el = doc.createElement("column");
 		el.setAttribute("tableCatalogName", getTableCatalogName());
 		el.setAttribute("tableSchemaName", getTableSchemaName());
-		el.setAttribute("tableName", getTableSchemaName());
-		el.setAttribute("columnName", getTableSchemaName());
-		el.setAttribute("ordinalPosition", getTableSchemaName());
-		el.setAttribute("columnDefault", getTableSchemaName());
-		el.setAttribute("isNullable", getTableSchemaName());
-		el.setAttribute("dataType", getTableSchemaName());
-		el.setAttribute("characterMaximumLength", getTableSchemaName());
-		el.setAttribute("characterOctetLength", getTableSchemaName());
-		el.setAttribute("numericPrecision", getTableSchemaName());
-		el.setAttribute("numericScale", getTableSchemaName());
+		el.setAttribute("tableName", getTableName());
+		el.setAttribute("columnName", getColumnName());
+		el.setAttribute("ordinalPosition", getOrdinalPosition() + "");
+		el.setAttribute("columnDefault", getColumnDefault());
+		el.setAttribute("isNullable", getIsNullable());
+		el.setAttribute("dataType", getDataType());
+		el.setAttribute("characterMaximumLength", getCharacterMaximumLength() + "");
+		el.setAttribute("characterOctetLength", getCharacterOctetLength() + "");
+		el.setAttribute("numericPrecision", getNumericPrecision() + "");
+		el.setAttribute("numericScale", getNumericScale() + "");
 	    
         if(constraint != null){
             el.setAttribute("constraintCatalog", constraint.getConstraintCatalog());

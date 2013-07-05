@@ -54,8 +54,10 @@ public class Table extends TreeNode implements SQLElement {
 	public Element createDomElement(Document doc) throws Exception {
 		Element el;
 		el = doc.createElement("table");
-		el.setAttribute("name", getTableName());
-		el.setAttribute("type", getTableType());
+		el.setAttribute("tableCatalogName", getTableCatalogName());
+		el.setAttribute("tableSchemaName", getTableSchemaName());
+		el.setAttribute("tableName", getTableName());
+		el.setAttribute("tableType", getTableType());
 		return el;
 	}
 	
@@ -72,8 +74,10 @@ public class Table extends TreeNode implements SQLElement {
 	public TreeNode parseElement(String uri, String localName, String qName,
 			Attributes atts) {
     	Table newTbl = new Table();
-    	newTbl.setTableName(atts.getValue("name"));
-    	newTbl.setTableType(atts.getValue("type"));
+    	newTbl.setTableCatalogName(atts.getValue("tableCatalogName"));
+    	newTbl.setTableSchemaName(atts.getValue("tableSchemaName"));
+    	newTbl.setTableName(atts.getValue("tableName"));
+    	newTbl.setTableType(atts.getValue("tableType"));
 		return newTbl;
 	}
 	
