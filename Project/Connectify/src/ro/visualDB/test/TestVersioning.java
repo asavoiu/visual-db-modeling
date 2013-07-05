@@ -32,7 +32,7 @@ public class TestVersioning {
 			Schema s = (Schema) ct.getChildAt(0); // dbtooekfdenm82
 			Table test = (Table) s.getChildAt(5); // games
 			Column id = (Column) test.getChildAt(0);// id_games
-			id.setForeignKey(false);
+			
 			id.setAltered(true);
 			
 			System.out.println("Modified column " + id + " from table " +

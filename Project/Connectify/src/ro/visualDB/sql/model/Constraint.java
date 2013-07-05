@@ -22,9 +22,9 @@ public class Constraint {
     // Name of the column that is restricted by some constraint
     private String columnName = "";
     /* Type of the constraint: CHECK (only available for Postgres),
-     * FOREIGN KEY, PRIMARY KEY, or UNIQUE
-     */
+     * FOREIGN KEY, PRIMARY KEY, or UNIQUE */
     private String constraintType = "";
+    
 	public String getConstraintCatalog() {
 		return constraintCatalog;
 	}
@@ -72,5 +72,25 @@ public class Constraint {
 	}
 	public void setConstraintType(String constraintType) {
 		this.constraintType = constraintType;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Constraint) {
+			Constraint tn = (Constraint)obj;
+			if (constraintCatalog.equals(tn.getConstraintCatalog()) &&
+	            constraintSchema.equals(tn.getConstraintSchema()) &&
+	            constraintName.equals(tn.getConstraintName()) &&
+	            tableCatalog.equals(tn.getTableCatalog()) &&
+	            tableSchema.equals(tn.getTableSchema()) &&
+	            tableName.equals(tn.getTableName()) &&
+	            columnName.equals(tn.getColumnName()) &&
+	            constraintType.equals(tn.getConstraintType())) {
+				return true;
+			}
+			return false;
+		} else {
+			return false;
+		}
 	}
 }

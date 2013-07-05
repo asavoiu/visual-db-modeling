@@ -20,21 +20,7 @@ public class Table extends TreeNode implements SQLElement {
 	 * "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY",
 	 * "LOCAL TEMPORARY", "ALIAS", "SYNONYM".*/
 	String tableType = null;
-	/* REMARKS String => explanatory comment on the table */
-	String remarks = null;
-	/* TYPE_CAT String => the types catalog (may be null) */
-	String typesCatalog = null;
-	/* TYPE_SCHEM String => the types schema (may be null) */
-	String typesSchema = null;
-	/* TYPE_NAME String => type name (may be null) */
-	String typeName = null;
-	/* SELF_REFERENCING_COL_NAME String => name of the
-	 * designated "identifier" column of a typed table (may be null)*/
-	String selfRefrencingColName = null;
-	/* REF_GENERATION String => specifies how values in
-	 * SELF_REFERENCING_COL_NAME are created. Values are
-	 * "SYSTEM", "USER", "DERIVED". (may be null)*/
-	String refGeneration = null;
+	
 	
 	public String getTableCatalogName() {
 		return tableCatalogName;
@@ -59,42 +45,6 @@ public class Table extends TreeNode implements SQLElement {
 	}
 	public void setTableType(String tableType) {
 		this.tableType = tableType;
-	}
-	public String getRemarks() {
-		return remarks;
-	}
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
-	}
-	public String getTypesCatalog() {
-		return typesCatalog;
-	}
-	public void setTypesCatalog(String typesCatalog) {
-		this.typesCatalog = typesCatalog;
-	}
-	public String getTypesSchema() {
-		return typesSchema;
-	}
-	public void setTypesSchema(String typesSchema) {
-		this.typesSchema = typesSchema;
-	}
-	public String getTypeName() {
-		return typeName;
-	}
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
-	}
-	public String getSelfRefrencingColName() {
-		return selfRefrencingColName;
-	}
-	public void setSelfRefrencingColName(String selfRefrencingColName) {
-		this.selfRefrencingColName = selfRefrencingColName;
-	}
-	public String getRefGeneration() {
-		return refGeneration;
-	}
-	public void setRefGeneration(String refGeneration) {
-		this.refGeneration = refGeneration;
 	}
 	
 	public String toString() {
@@ -145,6 +95,9 @@ public class Table extends TreeNode implements SQLElement {
 									col.getNumericScale() + ") ";
 						} else if (col.getNumericPrecision() != 0) {
 							sql += "(" + col.getNumericPrecision() + ") ";
+						} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+								col.getCharacterMaximumLength() != 0) {
+							sql += "(" + col.getCharacterMaximumLength() + ") ";
 						}
 						if (i < getChildrenCount() - 1) {
 							sql += ",\n";
@@ -167,6 +120,9 @@ public class Table extends TreeNode implements SQLElement {
 									col.getNumericScale() + ") ";
 						} else if (col.getNumericPrecision() != 0) {
 							sql += "(" + col.getNumericPrecision() + ") ";
+						} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+								col.getCharacterMaximumLength() != 0) {
+							sql += "(" + col.getCharacterMaximumLength() + ") ";
 						}
 						if (i < getChildrenCount() - 1) {
 							sql += ",\n";
@@ -197,26 +153,16 @@ public class Table extends TreeNode implements SQLElement {
 							modified = true;
 							sql += "\t\tMODIFY COLUMN ";
 							sql += col.getColumnName() + " " + col.getDataType();
-							/*/TODO HACK replace this
-							if (col.getTypeName().equalsIgnoreCase("BIT") ||
-									col.getTypeName().equalsIgnoreCase("TINYINT") ||
-									col.getTypeName().equalsIgnoreCase("SMALLINT") ||
-									col.getTypeName().equalsIgnoreCase("MEDIUMINT") ||
-									col.getTypeName().equalsIgnoreCase("INT") ||
-									col.getTypeName().equalsIgnoreCase("INTEGER") ||
-									col.getTypeName().equalsIgnoreCase("BIGINT") ||
-									col.getTypeName().equalsIgnoreCase("REAL") ||
-									col.getTypeName().equalsIgnoreCase("DOUBLE") ||
-									col.getTypeName().equalsIgnoreCase("FLOAT") ||
-									col.getTypeName().equalsIgnoreCase("DECIMAL") ||
-									col.getTypeName().equalsIgnoreCase("NUMERIC") ||
-									col.getTypeName().equalsIgnoreCase("CHAR") ||
-									col.getTypeName().equalsIgnoreCase("VARCHAR") ||
-									col.getTypeName().equalsIgnoreCase("BINARY") ||
-									col.getTypeName().equalsIgnoreCase("VARBINARY")
-									) {
-								sql += "(" + col.getColumnSize() + ") ";
-							}*/
+							if (col.getNumericPrecision() != 0 &&
+									col.getNumericScale() != 0) {
+								sql += "(" + col.getNumericPrecision() + "," +
+										col.getNumericScale() + ") ";
+							} else if (col.getNumericPrecision() != 0) {
+								sql += "(" + col.getNumericPrecision() + ") ";
+							} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+									col.getCharacterMaximumLength() != 0) {
+								sql += "(" + col.getCharacterMaximumLength() + ") ";
+							}
 						}
 					}
 				}
@@ -233,11 +179,16 @@ public class Table extends TreeNode implements SQLElement {
 							modified = true;
 							sql += "\t\tALTER COLUMN ";
 							sql += col.getColumnName() + " SET DATA TYPE " + col.getDataType();
-							/*/TODO HACK replace this
-							if (col.getTypeName().equalsIgnoreCase("VARCHAR") ||
-									col.getTypeName().equalsIgnoreCase("INT")) {
-								sql += "(" + col.getColumnSize() + ") ";
-							}*/
+							if (col.getNumericPrecision() != 0 &&
+									col.getNumericScale() != 0) {
+								sql += "(" + col.getNumericPrecision() + "," +
+										col.getNumericScale() + ") ";
+							} else if (col.getNumericPrecision() != 0) {
+								sql += "(" + col.getNumericPrecision() + ") ";
+							} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+									col.getCharacterMaximumLength() != 0) {
+								sql += "(" + col.getCharacterMaximumLength() + ") ";
+							}
 						}
 					}
 				}

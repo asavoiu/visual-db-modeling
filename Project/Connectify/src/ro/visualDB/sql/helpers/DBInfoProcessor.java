@@ -260,24 +260,7 @@ public class DBInfoProcessor {
 				try{
 					t.setTableType(rs.getString(4));
 				} catch (SQLException e) {}
-				try{
-					t.setRemarks(rs.getString(5));
-				} catch (SQLException e) {}
-				try{
-					t.setTypesCatalog(rs.getString(6));
-				} catch (SQLException e) {}
-				try{
-						t.setTypesSchema(rs.getString(7));
-				} catch (SQLException e) {}
-				try{
-					t.setTypeName(rs.getString(8));
-				} catch (SQLException e) {}
-				try{
-					t.setSelfRefrencingColName(rs.getString(9));
-				} catch (SQLException e) {}
-				try{
-					t.setRefGeneration(rs.getString(10));
-				} catch (SQLException e) {}
+				
 				tables.add(t);
 			}
 		} finally {
@@ -378,43 +361,15 @@ public class DBInfoProcessor {
 				} catch (SQLException e) {}
 				try {
 					c.setColumnName(rs.getString("COLUMN_NAME"));
-                    c.setPrimaryKey(myPkColumn.equals(rs.getString("COLUMN_NAME")));
-                    c.setForeignKey(findTheFKs(foreignKeys,rs.getString("COLUMN_NAME"))!=-1);
-                    if(c.isForeignKey()){
-                        c.setForeignKeys(foreignKeys.get(findTheFKs(foreignKeys,rs.getString("COLUMN_NAME"))));
-                    }
                 } catch (SQLException e) {}
 				try {
 					c.setDataType(rs.getString("DATA_TYPE"));
 				} catch (SQLException e) {}
-				try {
-					c.setTypeName(rs.getString("TYPE_NAME"));
-				} catch (SQLException e) {}
-				try {
-					c.setColumnSize(rs.getInt("COLUMN_SIZE"));
-				} catch (SQLException e) {}
-				//skipp bufferLength;
-				try {
-					c.setDecimalDigits(rs.getInt("DECIMAL_DIGITS"));
-				} catch (SQLException e) {}
-				try {
-					c.setNumPrecRadix(rs.getInt("NUM_PREC_RADIX"));
-				} catch (SQLException e) {}
-				try {
-					c.setNullable(rs.getInt("NULLABLE"));
-				} catch (SQLException e) {}
-				try {
-					c.setRemarks(rs.getString("REMARKS"));
-				} catch (SQLException e) {}
+				
 				try {
 					c.setColumnDefault(rs.getString("COLUMN_DEF"));
 				} catch (SQLException e) {}
-				try {
-					c.setSqlDataType(rs.getInt("SQL_DATA_TYPE"));
-				} catch (SQLException e) {}
-				try {
-					c.setSqlDateTimeSub(rs.getInt("SQL_DATETIME_SUB"));
-				} catch (SQLException e) {}
+				
 				try {
 					c.setCharacterOctetLength(rs.getInt("CHAR_OCTET_LENGTH"));
 				} catch (SQLException e) {}
@@ -424,24 +379,8 @@ public class DBInfoProcessor {
 				try {
 					c.setIsNullable(rs.getString("IS_NULLABLE"));
 				} catch (SQLException e) {}
-				try {
-					c.setScopeCatalog(rs.getString("SCOPE_CATALOG"));
-				} catch (SQLException e) {}
-				try {
-					c.setScopeSchema(rs.getString("SCOPE_SCHEMA"));
-				} catch (SQLException e) {}
-				try {
-					c.setScopeTable(rs.getString("SCOPE_TABLE"));
-				} catch (SQLException e) {}
-				try {
-					c.setSourceDataType(rs.getShort("SOURCE_DATA_TYPE"));
-				} catch (SQLException e) {}
-				try {
-					c.setIsAutoIncrement(rs.getString("IS_AUTOINCREMENT"));
-				} catch (SQLException e) {}
-				try {
-					c.setIsGeneratedColumn(rs.getString("IS_GENERATEDCOLUMN"));
-				} catch (SQLException e) {}
+				
+				
 				columns.add(c);
 			}
 		} finally {
@@ -562,10 +501,10 @@ public class DBInfoProcessor {
 				" information_schema.key_column_usage.column_name as constraint_column_name, " +
 				" information_schema.table_constraints.constraint_type as constraint_type " +
 		" from information_schema.schemata " +
-				" left outer join information_schema.tables " +
+				" left join information_schema.tables " +
 					" on information_schema.schemata.catalog_name = information_schema.tables.table_catalog and " +
 					   " information_schema.schemata.schema_name = information_schema.tables.table_schema " +
-				" left outer join information_schema.columns " +
+				" left join information_schema.columns " +
 					" on information_schema.tables.table_catalog = information_schema.columns.table_catalog and " + 
 					   " information_schema.tables.table_schema = information_schema.columns.table_schema and " +
 					   " information_schema.tables.table_name = information_schema.columns.table_name " +
@@ -575,7 +514,11 @@ public class DBInfoProcessor {
 					   " information_schema.columns.table_name = information_schema.key_column_usage.table_name and " +
 					   " information_schema.columns.column_name = information_schema.key_column_usage.column_name " +
 				" left join information_schema.table_constraints " +
-					" on information_schema.key_column_usage.constraint_name = information_schema.table_constraints.constraint_name" + 
+					" on information_schema.key_column_usage.constraint_name = information_schema.table_constraints.constraint_name and" +
+		((remote.getDatabaseEngine() == SQLEngine.POSTGRES) ?
+					   " information_schema.key_column_usage.table_catalog = information_schema.table_constraints.table_catalog and " : "") +
+					   " information_schema.key_column_usage.table_schema = information_schema.table_constraints.table_schema and " +
+					   " information_schema.key_column_usage.table_name = information_schema.table_constraints.table_name " +
 		" order by information_schema.schemata.catalog_name, " +
 				" information_schema.schemata.schema_name, " +
 				" information_schema.tables.table_name ";
@@ -592,6 +535,8 @@ public class DBInfoProcessor {
 			String lastCatalogName = "";
 			String lastSchemaName = "";
 			String lastTableName = "";
+			boolean catalogChanged = false;
+			boolean schemaChanged = false;
 			
 			while (rs.next()) {
 				// if new catalog add it to the tree
@@ -599,22 +544,31 @@ public class DBInfoProcessor {
 					cat = new Catalog();
 					cat.setCatalogName(rs.getString("catalog_name"));
 					lastCatalogName = cat.getCatalogName();
+					catalogChanged = true;
 					remote.addChild(cat);
+				} else {
+					catalogChanged = false;
 				}
 				// if new schema add it to the tree
-				if (!lastSchemaName.equals(rs.getString("schema_name"))) {
+				if (!lastSchemaName.equals(rs.getString("schema_name")) ||
+						catalogChanged) {
 					sch = new Schema();
 					sch.setCatalogName(cat.getCatalogName());
 					sch.setSchemaName(rs.getString("schema_name"));
 					lastSchemaName = sch.getSchemaName();
+					schemaChanged = true;
 					cat.addChild(sch);
+				} else {
+					schemaChanged = false;
 				}
 				
 				if (rs.getString("table_name") == null) {
 					continue; // empty databases have no tables
 				}
 				// if new table add it to the tree
-				if (!lastTableName.equals(rs.getString("table_name"))) {
+				if (!lastSchemaName.equals(rs.getString("schema_name")) ||
+						catalogChanged || 
+						schemaChanged) {
 					tbl = new Table();
 					tbl.setTableCatalogName(cat.getCatalogName());
 					tbl.setTableSchemaName(sch.getSchemaName());
@@ -623,6 +577,7 @@ public class DBInfoProcessor {
 					lastTableName = tbl.getTableName();
 					sch.addChild(tbl);
 				}
+
 				// add new column to the tree
 				c = new Column();
 				c.setTableCatalogName(cat.getCatalogName());
@@ -640,13 +595,6 @@ public class DBInfoProcessor {
 				
 				// add foreign key or public key constraint
 				if (rs.getString("constraint_type") != null) {
-					if (rs.getString("constraint_type").equalsIgnoreCase("PRIMARY KEY")) { // pk
-						c.setPrimaryKey(true);
-						c.setForeignKey(false);
-					} else { // fk
-						c.setForeignKey(true);
-						c.setPrimaryKey(false);
-					}
 					Constraint cons =  new Constraint();
 					cons.setConstraintCatalog(rs.getString("constraint_catalog"));
 					cons.setConstraintSchema(rs.getString("constraint_schema"));
@@ -657,9 +605,6 @@ public class DBInfoProcessor {
 					cons.setColumnName(rs.getString("constraint_column_name"));
 					cons.setConstraintType(rs.getString("constraint_type"));
 					c.setConstraint(cons);
-				} else {
-					c.setForeignKey(false);
-					c.setPrimaryKey(false);
 				}
 				
 				tbl.addChild(c);
