@@ -3,6 +3,7 @@ package ro.visualDB.xml;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -90,7 +91,7 @@ public class XMLElementFactory {
 			
 			while (resources.hasMoreElements()) {
 				URL url = resources.nextElement();
-				File file = new File(url.getFile());
+				File file = new File(URLDecoder.decode(url.getFile(), "UTF-8" ));
 				classList.putAll(getAllClasses(file));
 			}
 		} catch (Exception e) {
