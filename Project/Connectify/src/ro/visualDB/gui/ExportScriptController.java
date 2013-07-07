@@ -1,15 +1,15 @@
 package ro.visualDB.gui;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import ro.visualDB.remotes.Remote;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +19,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class ExportScriptController {
+	Remote remote;
 
     @FXML
     protected void saveRemote(ActionEvent event){
@@ -34,7 +35,7 @@ public class ExportScriptController {
         if(file != null){
             SaveFile("file", file);
         }
-
+        
         Node  source = (Node)  event.getSource();
         Stage stage  = (Stage) source.getScene().getWindow();
         stage.close();
@@ -52,5 +53,13 @@ public class ExportScriptController {
         }
 
     }
+
+	public Remote getRemote() {
+		return remote;
+	}
+
+	public void setRemote(Remote remote) {
+		this.remote = remote;
+	}
 
 }

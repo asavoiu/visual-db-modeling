@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
-
+	ArrayList<Remote> remotes = new ArrayList<Remote>();
+	
     @FXML
     private TreeView<String> treeViewRemote;
 
@@ -53,10 +54,21 @@ public class Controller {
         Stage dialogue = new Stage();
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader();
-        root = FXMLLoader.load(getClass().getResource("Dialogues/NewConnection.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/NewConnection.fxml"));
+        root = (Parent)loader.load();
         Scene scene = new Scene(root);
-
+        
+        // set data on the controller
+        NewConnectionController controller = loader.<NewConnectionController>getController();
+        controller.setParentController(this);
+        controller.getHostName().setText("ec2-23-21-161-153.compute-1.amazonaws.com");
+        controller.getPort().setText("5432");
+        controller.getUsername().setText("ikqepbqiwxmcwe");
+        controller.getDatabaseName().setText("dbtooekfdenm82");
+        controller.getPassword().setText("cI6PNkfjz4SajHnobEeCHwmvfv");
+        controller.getDbType().setValue("PostgreSQL");
+        controller.getSslActive().setSelected(true);
+        
         dialogue.setTitle("Add New Remote");
         dialogue.setScene(scene);
         dialogue.show();
@@ -82,10 +94,14 @@ public class Controller {
         Stage dialogue = new Stage();
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader();
-        root = FXMLLoader.load(getClass().getResource("Dialogues/ExportRemote.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/ExportRemote.fxml"));
+        root = (Parent)loader.load();
         Scene scene = new Scene(root);
 
+        // set data on the controller
+        ExportScriptController controller = loader.<ExportScriptController>getController();
+        controller.setRemote(remotes.size() > 0 ? remotes.get(0) : null);
+        	  
         dialogue.setTitle("Export Script");
         dialogue.setScene(scene);
         dialogue.show();
@@ -158,6 +174,7 @@ public class Controller {
         rmt.setPassword("cI6PNkfjz4SajHnobEeCHwmvfv");
         rmt.setDatabase("dbtooekfdenm82");
         rmt.setDatabaseEngine(SQLEngine.POSTGRES);
+        rmt.setSsl(true);
 
         TreeNode myTree = Api.importFromRemote(rmt);
 
@@ -394,6 +411,10 @@ public class Controller {
 //            line1.setStartX();
 //            line1.setStartY();
         }
+    }
+    
+    public void addRemote (Remote remote) {
+    	remotes.add(remote);
     }
 
 }

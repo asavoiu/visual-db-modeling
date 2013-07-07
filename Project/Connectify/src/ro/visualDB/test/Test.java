@@ -29,6 +29,7 @@ public class Test {
 			rmt2.setUser("ikqepbqiwxmcwe");
 			rmt2.setPassword("cI6PNkfjz4SajHnobEeCHwmvfv");
 			rmt2.setDatabase("dbtooekfdenm82");
+			rmt2.setSsl(true);
 			rmt2.setDatabaseEngine(SQLEngine.POSTGRES);
 			
 			//mysql
@@ -38,17 +39,21 @@ public class Test {
 			rmt3.setUser("sql313131");
 			rmt3.setPassword("yB4%pP8%");
 			rmt3.setDatabase("sql313131");
+			rmt3.setSsl(true);
 			rmt3.setDatabaseEngine(SQLEngine.MYSQL);
 			
 			Api.importFromRemote(rmt2);
-			//System.out.println(Api.getCreateSQLScriptsOfTreeNodeAndChildren(rmt2, SQLEngine.POSTGRES));
-
-			Table t = Api.findTable(rmt2, "dbtooekfdenm82", "dbtooekfdenm82", "galaxies");
-			System.out.println("TABLE " + t.getTableName());
-			
-			Api.executeQueryOnDatabase(rmt3, rmt3.getDatabase(), t.getCreateSqlStatement(SQLEngine.MYSQL));
 			Api.importFromRemote(rmt3);
-			System.out.println(Api.getCreateSQLScriptsOfTreeNodeAndChildren(rmt3, SQLEngine.MYSQL));
+			System.out.println(Api.getCreateSQLScriptsOfTreeNodeAndChildren(rmt3, SQLEngine.POSTGRES));
+
+			/*Table t = Api.findTable(rmt2, "dbtooekfdenm82", "dbtooekfdenm82", "planets");
+			Table t2 = Api.findTable(rmt3, "def", "sql313131", "furnizori");
+			t2.getChildren().get(0).setAltered(false);
+			System.out.println(t2.getModifySqlStatement(SQLEngine.POSTGRES));
+			*/
+			//Api.executeQueryOnDatabase(rmt3, rmt3.getDatabase(), t.getCreateSqlStatement(SQLEngine.MYSQL));
+			//Api.importFromRemote(rmt3);
+			//System.out.println(Api.getCreateSQLScriptsOfTreeNodeAndChildren(rmt3, SQLEngine.MYSQL));
 			
 			//Api.exportToXML(rmt, "C:\\Users\\Auras\\Desktop\\test.xml");
 			//Remote rmtt = (Remote)Api.importFromXML("C:\\Users\\Auras\\Desktop\\test.xml");

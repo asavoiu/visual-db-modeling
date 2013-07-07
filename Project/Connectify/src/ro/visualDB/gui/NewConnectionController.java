@@ -1,5 +1,9 @@
 package ro.visualDB.gui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,9 +19,6 @@ import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Bogdan
@@ -26,6 +27,7 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class NewConnectionController {
+	Controller parentController;
 
     @FXML
     private TextField hostName;
@@ -55,7 +57,7 @@ public class NewConnectionController {
     }
 
     @FXML protected void okButton(ActionEvent event) throws Exception {
-
+    			closeWindow(event);
 //        if ((hostName.getText().equals("")) || (port.getText().equals("")) ||
 //                (username.getText().equals("")) || (password.getText().equals("")) ||
 //                (databaseName.getText().equals("")) || (dbType.getSelectionModel().getSelectedItem()==null)) {
@@ -68,7 +70,7 @@ public class NewConnectionController {
 //            if(dbType.getSelectionModel().getSelectedItem().equals("PostgreSQL")){
 
                 //Show "Connecting" window
-                Stage dialogue = new Stage();
+                final Stage dialogue = new Stage();
                 Parent root = null;
 
                 FXMLLoader loader = new FXMLLoader();
@@ -94,28 +96,60 @@ public class NewConnectionController {
 //                    true
 //                );
 
-//                DBInfoProcessor dbip = new DBInfoProcessor(dbConn);
-//                Remote rmt = new Remote();
-//                rmt.setHost(hostName.getText());
-//                rmt.setPort(port.getText());
-//                rmt.setUser(username.getText());
-//                rmt.setPassword(password.getText());
-//                rmt.setDatabase(databaseName.getText());
-//                rmt.setDatabaseEngine(SQLEngine.POSTGRES);
-//
-//                TreeNode tn = new TreeNode();
-//                tn.setValue(rmt);
+                final Remote rmt = new Remote();
+                rmt.setHost(hostName.getText());
+                rmt.setPort(port.getText());
+                rmt.setUser(username.getText());
+                rmt.setPassword(password.getText());
+                rmt.setDatabase(databaseName.getText());
+                rmt.setSsl(sslActive.isSelected());
+                rmt.setDatabaseEngine(dbType.getValue().equalsIgnoreCase("PostgreSQL") ? SQLEngine.POSTGRES : SQLEngine.MYSQL);
 
-//                dbip.buildTreeForRemoteConnectionTreeNode(tn);
-                Remote rmt = new Remote();
+                /*
                 rmt.setHost("ec2-23-21-161-153.compute-1.amazonaws.com");
                 rmt.setPort("5432");
                 rmt.setUser("ikqepbqiwxmcwe");
                 rmt.setPassword("cI6PNkfjz4SajHnobEeCHwmvfv");
                 rmt.setDatabase("dbtooekfdenm82");
                 rmt.setDatabaseEngine(SQLEngine.POSTGRES);
-
-                TreeNode myTree = Api.importFromRemote(rmt);
+                rmt.setSsl(true);
+                */
+                final ActionEvent threadEvent = event;
+            	new Thread( new Runnable() {
+					
+					@Override
+					public void run() {
+						 try {
+							 TreeNode myTree = Api.importFromRemote(rmt);
+			             } catch (Exception e) {
+			                	//TODO print error message
+			             } finally {
+			            	 	
+		            	 		Platform.runLater(new Runnable() {
+			            	 		@Override
+			                        public void run() {
+			            	 			try {
+			                        	parentController.printTreeInTreeView(threadEvent);
+			            	 			} catch (Exception e) {
+					            	 		//TODO interface exeption
+					            	 	}
+			                        }
+		            	 		});
+			            	 	
+			            	 	Platform.runLater(new Runnable() {
+			                        @Override public void run() {
+						                parentController.addRemote(rmt);
+			                        	dialogue.close();
+						                Node source = (Node)  threadEvent.getSource();
+						                Stage stage  = (Stage) source.getScene().getWindow();
+						                stage.close();
+			                        }
+			                    });
+				                
+			             }
+					}
+				}).start();
+	                
 //                System.out.println(treeNode.getChildren().get(0).getChildren());
 
 //                ArrayList<TreeNode> currentNode=null;
@@ -141,11 +175,7 @@ public class NewConnectionController {
         /*
         this.print2(myTree);
          */
-
-                dialogue.close();
-                Node source = (Node)  event.getSource();
-                Stage stage  = (Stage) source.getScene().getWindow();
-                stage.close();
+                
 
 //                Controller controller = new Controller();
 //                controller.testMe(new ActionEvent());
@@ -232,5 +262,69 @@ public class NewConnectionController {
         dialogue.setScene(scene);
         dialogue.show();
     }
+
+	public Controller getParentController() {
+		return parentController;
+	}
+
+	public void setParentController(Controller parentController) {
+		this.parentController = parentController;
+	}
+
+	public TextField getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(TextField hostName) {
+		this.hostName = hostName;
+	}
+
+	public TextField getPort() {
+		return port;
+	}
+
+	public void setPort(TextField port) {
+		this.port = port;
+	}
+
+	public TextField getUsername() {
+		return username;
+	}
+
+	public void setUsername(TextField username) {
+		this.username = username;
+	}
+
+	public TextField getPassword() {
+		return password;
+	}
+
+	public void setPassword(TextField password) {
+		this.password = password;
+	}
+
+	public TextField getDatabaseName() {
+		return databaseName;
+	}
+
+	public void setDatabaseName(TextField databaseName) {
+		this.databaseName = databaseName;
+	}
+
+	public CheckBox getSslActive() {
+		return sslActive;
+	}
+
+	public void setSslActive(CheckBox sslActive) {
+		this.sslActive = sslActive;
+	}
+
+	public ComboBox<String> getDbType() {
+		return dbType;
+	}
+
+	public void setDbType(ComboBox<String> dbType) {
+		this.dbType = dbType;
+	}
 
 }
