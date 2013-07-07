@@ -211,7 +211,10 @@ public class Table extends TreeNode implements SQLElement {
 							} else if (dataType.equalsIgnoreCase("NUMERIC") &&
 									col.getNumericPrecision() != 0) {
 								sql += "(" + col.getNumericPrecision() + ") ";
-							} else if ((dataType.equalsIgnoreCase("CHAR") || dataType.equalsIgnoreCase("VARCHAR")) &&
+							} else if ((dataType.equalsIgnoreCase("CHAR") ||
+										dataType.equalsIgnoreCase("VARCHAR") ||
+										dataType.equalsIgnoreCase("CHARACTER") ||
+										dataType.equalsIgnoreCase("CHARACTER VARYING")) &&
 									col.getCharacterMaximumLength() != 0) {
 								sql += "(" + col.getCharacterMaximumLength() + ") ";
 							}
