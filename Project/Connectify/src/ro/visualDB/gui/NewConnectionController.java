@@ -9,17 +9,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import ro.visualDB.api.Api;
 import ro.visualDB.remotes.Remote;
-import ro.visualDB.sql.connection.IDatabaseConnection;
-import ro.visualDB.sql.connection.PostgreSQLDatabaseConnection;
-import ro.visualDB.sql.helpers.DBInfoProcessor;
+import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
-import ro.visualDB.xml.XMLReader;
-import ro.visualDB.xml.XMLWriter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,61 +56,169 @@ public class NewConnectionController {
 
     @FXML protected void okButton(ActionEvent event) throws Exception {
 
-        if ((hostName.getText().equals("")) || (port.getText().equals("")) ||
-                (username.getText().equals("")) || (password.getText().equals("")) ||
-                (databaseName.getText().equals("")) || (dbType.getSelectionModel().getSelectedItem()==null)) {
-            try {
-                showWarning();
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        }else{
-            System.out.println(hostName.getText()+" \n"+port.getText()+" \n"+username.getText()+" \n"+password.getText()+" \n"+databaseName.getText()+"\n -------- \n"+sslActive.isSelected()+" \n"+dbType.getSelectionModel().getSelectedItem());
+//        if ((hostName.getText().equals("")) || (port.getText().equals("")) ||
+//                (username.getText().equals("")) || (password.getText().equals("")) ||
+//                (databaseName.getText().equals("")) || (dbType.getSelectionModel().getSelectedItem()==null)) {
+//            try {
+//                showWarning();
+//            } catch (IOException e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            }
+//        }else{
+//            if(dbType.getSelectionModel().getSelectedItem().equals("PostgreSQL")){
 
-            if(dbType.getSelectionModel().getSelectedItem().equals("PostgreSQL")){
-                IDatabaseConnection dbConn = new PostgreSQLDatabaseConnection(
-                        hostName.getText(),//"ec2-23-21-161-153.compute-1.amazonaws.com",
-                        port.getText(),//"5432",
-                        username.getText(),//"ikqepbqiwxmcwe",
-                        password.getText(),//"cI6PNkfjz4SajHnobEeCHwmvfv",
-                        databaseName.getText(),//"dbtooekfdenm82",
-                        true
-                );
+                //Show "Connecting" window
+                Stage dialogue = new Stage();
+                Parent root = null;
 
+                FXMLLoader loader = new FXMLLoader();
+                root = FXMLLoader.load(getClass().getResource("Dialogues/Loading.fxml"));
+                Scene scene = new Scene(root);
+
+                dialogue.setTitle("Please wait | Connecting");
+                dialogue.setScene(scene);
+                dialogue.show();
+
+                //Connecting
+//                IDatabaseConnection dbConn = new PostgreSQLDatabaseConnection(
+//                    hostName.getText(),//"ec2-23-21-161-153.compute-1.amazonaws.com",
+//                    port.getText(),//"5432",
+//                    username.getText(),//"ikqepbqiwxmcwe",
+//                    password.getText(),//"cI6PNkfjz4SajHnobEeCHwmvfv",
+//                    databaseName.getText(),//"dbtooekfdenm82",
+//                    "ec2-23-21-161-153.compute-1.amazonaws.com",
+//                    "5432",
+//                    "ikqepbqiwxmcwe",
+//                    "cI6PNkfjz4SajHnobEeCHwmvfv",
+//                    "dbtooekfdenm82",
+//                    true
+//                );
+
+//                DBInfoProcessor dbip = new DBInfoProcessor(dbConn);
+//                Remote rmt = new Remote();
+//                rmt.setHost(hostName.getText());
+//                rmt.setPort(port.getText());
+//                rmt.setUser(username.getText());
+//                rmt.setPassword(password.getText());
+//                rmt.setDatabase(databaseName.getText());
+//                rmt.setDatabaseEngine(SQLEngine.POSTGRES);
+//
+//                TreeNode tn = new TreeNode();
+//                tn.setValue(rmt);
+
+//                dbip.buildTreeForRemoteConnectionTreeNode(tn);
                 Remote rmt = new Remote();
-                rmt.setHost("instance43492.db.xeround.com");
-                rmt.setPort("8907");
-                rmt.setUser("octavyan55");
-                rmt.setPassword("q1w2e3");
-                rmt.setDatabase("");
-                DBInfoProcessor dbip = new DBInfoProcessor(rmt);
+                rmt.setHost("ec2-23-21-161-153.compute-1.amazonaws.com");
+                rmt.setPort("5432");
+                rmt.setUser("ikqepbqiwxmcwe");
+                rmt.setPassword("cI6PNkfjz4SajHnobEeCHwmvfv");
+                rmt.setDatabase("dbtooekfdenm82");
+                rmt.setDatabaseEngine(SQLEngine.POSTGRES);
 
-//            rmt.setHost("localhost");
-//            rmt.setPort("3306");
-//			rmt.setUser("root");
-//			rmt.setPassword("");
-//			rmt.setDatabase("pw");
+                TreeNode myTree = Api.importFromRemote(rmt);
+//                System.out.println(treeNode.getChildren().get(0).getChildren());
 
-                TreeNode tn = new TreeNode();
-                tn.setValue(rmt);
+//                ArrayList<TreeNode> currentNode=null;
+//                System.out.println(myTree.getChildren());
 
-                //export scriptul bazei
-                //PostgreScriptWriter postgreScriptWriter = new PostgreScriptWriter(tn,"C:\\Users\\Auras\\Desktop\\script.sql");
-                //postgreScriptWriter.writeScriptToFile();
+//                currentNode = myTree.getChildren();
 
-//			tn.print(2);
-                //Tree tree = new Tree(tn);
-                XMLWriter.writeToFile("C:\\Users\\Bogdan\\Desktop\\test.xml", tn);
-                TreeNode readTn = XMLReader.readFromFile("C:\\Users\\Bogdan\\Desktop\\test.xml");
-                XMLWriter.writeToFile("C:\\Users\\Bogdan\\Desktop\\test2.xml", readTn);
-                System.out.println("gata");
-            }
+//                myTree.print(2);
 
-            if(dbType.getSelectionModel().getSelectedItem().equals("MySQL")){
+//                for (TreeNode firstChildren : currentNode) {
+//                    System.out.println(firstChildren.toString());
+//
+//                    ArrayList<TreeNode> seccondChildren = firstChildren.getChildren();
+//
+//                    for (TreeNode c : seccondChildren) {
+//                        System.out.println(c);
+//                        if(c.getChildrenCount()!=0){
+//                            System.out.println(c.getChildren());
+//                        }
+//                    }
+//                }
+
+        /*
+        this.print2(myTree);
+         */
+
+                dialogue.close();
+                Node source = (Node)  event.getSource();
+                Stage stage  = (Stage) source.getScene().getWindow();
+                stage.close();
+
+//                Controller controller = new Controller();
+//                controller.testMe(new ActionEvent());
+
+//            }
+//
+//            if(dbType.getSelectionModel().getSelectedItem().equals("MySQL")){
+//                //Show "Connecting" window
+//                Stage dialogue = new Stage();
+//                Parent root = null;
+//
+//                FXMLLoader loader = new FXMLLoader();
+//                root = FXMLLoader.load(getClass().getResource("Dialogues/Loading.fxml"));
+//                Scene scene = new Scene(root);
+//
+//                dialogue.setTitle("Please wait | Connecting");
+//                dialogue.setScene(scene);
+//                dialogue.show();
+//
+//                //Connecting
+//                IDatabaseConnection dbConn = new MySQLDatabaseConnection(
+//                    hostName.getText(),//"instance43492.db.xeround.com",
+//                    port.getText(),//"8907",
+//                    username.getText(),//"octavyan55",
+//                    password.getText(),//"q1w2e3",
+//                    databaseName.getText()//"",
+//                );
+//                DBInfoProcessor dbip = new DBInfoProcessor(dbConn);
+//                Remote rmt = new Remote();
+//                rmt.setHost(hostName.getText());
+//                rmt.setPort(port.getText());
+//                rmt.setUser(username.getText());
+//                rmt.setPassword(password.getText());
+//                rmt.setDatabase(databaseName.getText());
+//
+//                TreeNode tn = new TreeNode();
+//                tn.setValue(rmt);
+//                dbip.buildTreeForRemoteConnectionTreeNode(tn);
+//
+//                dialogue.close();
+//
+//                Node source = (Node)  event.getSource();
+//                Stage stage  = (Stage) source.getScene().getWindow();
+//                stage.close();
+//
+//            }
+//        }
+    }
+
+
+    public void print2(TreeNode tn) {
+        ArrayList<TreeNode> databaseName = tn.getChildren();
+        System.out.println(databaseName);
+
+        ArrayList<TreeNode> schemaName = databaseName.get(0).getChildren();
+        System.out.println(schemaName);
+
+        ArrayList<TreeNode> tables = schemaName.get(0).getChildren();
+        System.out.println(tables);
+
+        for(int i=0; i<tables.size(); i++){
+            if(!tables.get(i).toString().contains("_pkey")){
+                System.out.println("Tabel = "+tables.get(i).toString());
+
+                ArrayList<TreeNode> children = tables.get(i).getChildren();
+
+                for(int j=0; j<children.size(); j++){
+                    System.out.println("    "+children.get(j));
+                }
 
             }
         }
-    }
+        }
 
     protected void showWarning() throws IOException {
         Stage dialogue = new Stage();
