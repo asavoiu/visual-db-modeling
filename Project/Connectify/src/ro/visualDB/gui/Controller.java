@@ -100,7 +100,7 @@ public class Controller {
 
         // set data on the controller
         ExportScriptController controller = loader.<ExportScriptController>getController();
-        controller.setRemote(remotes.size() > 0 ? remotes.get(0) : null);
+        controller.setRemote(remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null);
         	  
         dialogue.setTitle("Export Script");
         dialogue.setScene(scene);

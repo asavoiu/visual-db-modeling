@@ -7,9 +7,12 @@ import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import ro.visualDB.api.Api;
 import ro.visualDB.remotes.Remote;
+import ro.visualDB.sql.query.SQLEngine;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,9 +23,16 @@ import ro.visualDB.remotes.Remote;
  */
 public class ExportScriptController {
 	Remote remote;
+	
+	@FXML
+    private ChoiceBox<String> dbType;
+
 
     @FXML
     protected void saveRemote(ActionEvent event){
+    	if (dbType.getValue() == null) {
+			return;
+		}
         FileChooser fileChooser = new FileChooser();
 
         //Set extension filter
@@ -32,8 +42,16 @@ public class ExportScriptController {
         //Show save file dialog
         File file = fileChooser.showSaveDialog(null);
 
-        if(file != null){
-            SaveFile("file", file);
+        if(file != null) {
+        	String sql = "";
+        	try {        		
+				sql = Api.getCreateSQLScriptsOfTreeNodeAndChildren(remote, 
+						dbType.getValue().equalsIgnoreCase("PostgreSQL") ? SQLEngine.POSTGRES : SQLEngine.MYSQL);
+				SaveFile(sql, file);
+			} catch (Exception e) {
+				// TODO SHOW ERROR
+				e.printStackTrace();
+			}
         }
         
         Node  source = (Node)  event.getSource();

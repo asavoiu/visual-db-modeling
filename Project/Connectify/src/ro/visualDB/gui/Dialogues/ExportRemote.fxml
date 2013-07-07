@@ -13,7 +13,7 @@
   <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="181.0" prefWidth="379.0">
     <children>
       <Button layoutX="292.0" layoutY="141.0" mnemonicParsing="false" onAction="#saveRemote" text="Export" />
-      <ChoiceBox layoutX="182.0" layoutY="82.0" prefWidth="133.0">
+      <ChoiceBox layoutX="182.0" layoutY="82.0" prefWidth="133.0" fx:id="dbType">
         <items>
           <FXCollections fx:factory="observableArrayList">
             <String fx:value="PostgreSQL" />
