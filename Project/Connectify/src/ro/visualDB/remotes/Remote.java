@@ -18,6 +18,7 @@ public class Remote extends TreeNode {
 	private String password;
 	private String database;
 	private int databaseEngine;
+	private boolean ssl = false;
 	
 	public String getHost() {
 		return host;
@@ -66,6 +67,7 @@ public class Remote extends TreeNode {
 		el.setAttribute("password", getPassword());
 		el.setAttribute("database", getDatabase());
 		el.setAttribute("databaseEngine", "" + getDatabaseEngine());
+		el.setAttribute("ssl", "" + ssl);
 		return el;
 	}
 	
@@ -89,6 +91,8 @@ public class Remote extends TreeNode {
     	rmt.setPassword(atts.getValue("password"));
     	rmt.setDatabase(atts.getValue("database"));
     	rmt.setDatabaseEngine(Integer.parseInt(atts.getValue("databaseEngine")));
+    	rmt.setSsl(Boolean.parseBoolean(atts.getValue("ssl")));
+
 		return rmt;
 	}
 	
@@ -129,9 +133,15 @@ public class Remote extends TreeNode {
 														 user,
 														 password,
 														 database,
-														 true);
+														 ssl);
 			default:
 				return null;
 		}
+	}
+	public boolean isSsl() {
+		return ssl;
+	}
+	public void setSsl(boolean ssl) {
+		this.ssl = ssl;
 	}
 }

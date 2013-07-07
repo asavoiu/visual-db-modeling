@@ -53,6 +53,7 @@ public class Cli {
 		options.addOption("p", true, "port for remote database (Used with -c)");		
 		options.addOption("u", true, "user name for remote database (Used with -c)");
 		options.addOption("pw", true, "user password for remote database (Used with -c)");
+		options.addOption("ssl", false, "use ssl for remote database (Used with -c)");
 
 		// add xml export options
 		options.addOption("exml", true, "export database structure to specific xml file"
@@ -112,6 +113,9 @@ public class Cli {
 					} else if (cmd.getOptionValue("dt").equals("postgres")) {
 						rmt.setDatabaseEngine(SQLEngine.POSTGRES);
 					}
+					if (cmd.hasOption("ssl")) {
+						rmt.setSsl(true);
+					}
 					Api.importFromRemote(rmt);
 				} else {
 					System.out.println("Parameters missing. Please verify usage!");
@@ -153,6 +157,9 @@ public class Cli {
 						rmt.setDatabaseEngine(SQLEngine.MYSQL);
 					} else if (cmd.getOptionValue("dt").equals("postgres")) {
 						rmt.setDatabaseEngine(SQLEngine.POSTGRES);
+					}
+					if (cmd.hasOption("ssl")) {
+						rmt.setSsl(true);
 					}
 					Api.importFromRemote(rmt);						
 				} else {
