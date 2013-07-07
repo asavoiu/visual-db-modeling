@@ -42,6 +42,7 @@ public class TreeNode implements XMLElement, SQLElement {
 	// Example: a Column is altered from NOT NULL to NULL 
 	private boolean dirty = false;
 
+	private TreeNode parent;
 	
 	public TreeNode() {
 		this.value = null;
@@ -53,12 +54,34 @@ public class TreeNode implements XMLElement, SQLElement {
 		this.value = value;	
 	}
 	
+	/* Return the TreeNode from the top
+	 * of the tree 
+	 */
+	public TreeNode getTopParent() {
+		if (this.parent == null) {
+			return null;
+		}
+		TreeNode parent = this.parent;
+		while (parent.getParent() != null) {
+			parent = parent.getParent();
+		}
+		return parent;
+	}
+	
 	public void addChild(TreeNode child) {
+		child.setParent(this);
 		children.add(child);
 	}
 	
+	public void removeChild(TreeNode child) {
+		child.setParent(null);
+		children.remove(child);
+	}
+	
 	public void addChildren(List<TreeNode> chlds) {
-		children.addAll(chlds);
+		for (TreeNode child : chlds) {
+			addChild(child);
+		}
 	}
 	
 	public int getChildrenCount() {
@@ -100,6 +123,9 @@ public class TreeNode implements XMLElement, SQLElement {
 
 	public void setChildren(ArrayList<TreeNode> children) {
 		this.children = children;
+		for (TreeNode child : children) {
+			child.setParent(this);
+		}
 	}
 	
 	public void print(int indentation) {
@@ -225,5 +251,13 @@ public class TreeNode implements XMLElement, SQLElement {
 	
 	public boolean equalsName(TreeNode tn) {
 		return false;
+	}
+
+	public TreeNode getParent() {
+		return parent;
+	}
+
+	public void setParent(TreeNode parent) {
+		this.parent = parent;
 	}
 }

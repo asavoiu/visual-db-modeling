@@ -4,10 +4,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
+import ro.visualDB.remotes.Remote;
+import ro.visualDB.sql.helpers.SQLTypeConverter;
 import ro.visualDB.sql.query.SQLElement;
 import ro.visualDB.sql.query.SQLEngine;
 import ro.visualDB.xml.TreeNode;
-import ro.visualDB.xml.XMLElement;
 
 public class Table extends TreeNode implements SQLElement {
 	/* TABLE_CAT  => table catalog (may be null) */
@@ -92,16 +93,17 @@ public class Table extends TreeNode implements SQLElement {
 					for (int i = 0 ; i < getChildrenCount(); i++) { 
 						Column col = (Column)getChildAt(i);
 						sql += "\t\t";
-						sql += col.getColumnName() + " " + col.getDataType();
-						if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+						String dataType = SQLTypeConverter.convertType(col.getDataType(), ((Remote)getTopParent()).getDatabaseEngine(), SQLEngine.MYSQL);
+						sql += col.getColumnName() + " " + dataType;
+						if (dataType.equalsIgnoreCase("NUMERIC") &&
 								col.getNumericPrecision() != 0 &&
 								col.getNumericScale() != 0) {
 							sql += "(" + col.getNumericPrecision() + "," +
 									col.getNumericScale() + ") ";
-						} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+						} else if (dataType.equalsIgnoreCase("NUMERIC") &&
 								col.getNumericPrecision() != 0) {
 							sql += "(" + col.getNumericPrecision() + ") ";
-						} else if ((col.getDataType().equalsIgnoreCase("CHAR") || col.getDataType().equalsIgnoreCase("VARCHAR")) &&
+						} else if ((dataType.equalsIgnoreCase("CHAR") || dataType.equalsIgnoreCase("VARCHAR")) &&
 								col.getCharacterMaximumLength() != 0) {
 							sql += "(" + col.getCharacterMaximumLength() + ") ";
 						}
@@ -122,16 +124,17 @@ public class Table extends TreeNode implements SQLElement {
 					for (int i = 0 ; i < getChildrenCount(); i++) { 
 						Column col = (Column)getChildAt(i);
 						sql += "\t\t";
-						sql += col.getColumnName() + " " + col.getDataType();
-						if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+						String dataType = SQLTypeConverter.convertType(col.getDataType(),((Remote)getTopParent()).getDatabaseEngine(), SQLEngine.POSTGRES);
+						sql += col.getColumnName() + " " + dataType;
+						if (dataType.equalsIgnoreCase("NUMERIC") &&
 								col.getNumericPrecision() != 0 &&
 								col.getNumericScale() != 0) {
 							sql += "(" + col.getNumericPrecision() + "," +
 									col.getNumericScale() + ") ";
-						} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+						} else if (dataType.equalsIgnoreCase("NUMERIC") &&
 								col.getNumericPrecision() != 0) {
 							sql += "(" + col.getNumericPrecision() + ") ";
-						} else if ((col.getDataType().equalsIgnoreCase("CHAR") || col.getDataType().equalsIgnoreCase("VARCHAR")) &&
+						} else if ((dataType.equalsIgnoreCase("CHAR") || dataType.equalsIgnoreCase("VARCHAR")) &&
 								col.getCharacterMaximumLength() != 0) {
 							sql += "(" + col.getCharacterMaximumLength() + ") ";
 						}
@@ -166,18 +169,22 @@ public class Table extends TreeNode implements SQLElement {
 							}
 							modified = true;
 							sql += "\t\tMODIFY COLUMN ";
-							sql += col.getColumnName() + " " + col.getDataType();
-							if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+							String dataType = SQLTypeConverter.convertType(col.getDataType(),((Remote)getTopParent()).getDatabaseEngine(), SQLEngine.POSTGRES);
+							sql += col.getColumnName() + " " + dataType;
+							if (dataType.equalsIgnoreCase("NUMERIC") &&
 									col.getNumericPrecision() != 0 &&
 									col.getNumericScale() != 0) {
 								sql += "(" + col.getNumericPrecision() + "," +
 										col.getNumericScale() + ") ";
-							} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+							} else if (dataType.equalsIgnoreCase("NUMERIC") &&
 									col.getNumericPrecision() != 0) {
 								sql += "(" + col.getNumericPrecision() + ") ";
-							} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+							} else if ((dataType.equalsIgnoreCase("CHAR") || dataType.equalsIgnoreCase("VARCHAR")) &&
 									col.getCharacterMaximumLength() != 0) {
 								sql += "(" + col.getCharacterMaximumLength() + ") ";
+							}
+							if (col.getColumnDefault() != null ) {
+								sql += " DEFAULT '" + col.getColumnDefault() + "'";
 							}
 						}
 					}
@@ -194,18 +201,25 @@ public class Table extends TreeNode implements SQLElement {
 							}
 							modified = true;
 							sql += "\t\tALTER COLUMN ";
-							sql += col.getColumnName() + " SET DATA TYPE " + col.getDataType();
-							if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+							String dataType = SQLTypeConverter.convertType(col.getDataType(),((Remote)getTopParent()).getDatabaseEngine(), SQLEngine.POSTGRES);
+							sql += col.getColumnName() + " SET DATA TYPE " + dataType;
+							if (dataType.equalsIgnoreCase("NUMERIC") &&
 									col.getNumericPrecision() != 0 &&
 									col.getNumericScale() != 0) {
 								sql += "(" + col.getNumericPrecision() + "," +
 										col.getNumericScale() + ") ";
-							} else if (col.getDataType().equalsIgnoreCase("NUMERIC") &&
+							} else if (dataType.equalsIgnoreCase("NUMERIC") &&
 									col.getNumericPrecision() != 0) {
 								sql += "(" + col.getNumericPrecision() + ") ";
-							} else if ((col.getDataType().equals("CHAR") || col.getDataType().equals("VARCHAR")) &&
+							} else if ((dataType.equalsIgnoreCase("CHAR") ||
+										dataType.equalsIgnoreCase("VARCHAR") ||
+										dataType.equalsIgnoreCase("CHARACTER") ||
+										dataType.equalsIgnoreCase("CHARACTER VARYING")) &&
 									col.getCharacterMaximumLength() != 0) {
 								sql += "(" + col.getCharacterMaximumLength() + ") ";
+							}
+							if (col.getColumnDefault() != null ) {
+								sql += " DEFAULT '" + col.getColumnDefault() + "'";
 							}
 						}
 					}
@@ -214,8 +228,10 @@ public class Table extends TreeNode implements SQLElement {
 			default:
 				break;
 		}
-		
-		return sql;
+		if (modified)
+			return sql;
+		else 
+			return null;
 	}
     
     
