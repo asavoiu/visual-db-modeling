@@ -167,16 +167,10 @@ public class Controller {
 
     @FXML public void printTreeInTreeView(ActionEvent event) throws Exception {
 
-        Remote rmt = new Remote();
-        rmt.setHost("ec2-23-21-161-153.compute-1.amazonaws.com");
-        rmt.setPort("5432");
-        rmt.setUser("ikqepbqiwxmcwe");
-        rmt.setPassword("cI6PNkfjz4SajHnobEeCHwmvfv");
-        rmt.setDatabase("dbtooekfdenm82");
-        rmt.setDatabaseEngine(SQLEngine.POSTGRES);
-        rmt.setSsl(true);
-
-        TreeNode myTree = Api.importFromRemote(rmt);
+        TreeNode myTree = remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null;
+        if (myTree == null) {
+        	return;
+        }
 
         table1.setVisible(false);
         table2.setVisible(false);

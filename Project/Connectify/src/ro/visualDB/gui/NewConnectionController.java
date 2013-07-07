@@ -129,22 +129,17 @@ public class NewConnectionController {
 			            	 		@Override
 			                        public void run() {
 			            	 			try {
-			                        	parentController.printTreeInTreeView(threadEvent);
+				                        	parentController.addRemote(rmt);
+				                        	parentController.printTreeInTreeView(threadEvent);
+				                        	dialogue.close();
+							                Node source = (Node)  threadEvent.getSource();
+							                Stage stage  = (Stage) source.getScene().getWindow();
+							                stage.close();
 			            	 			} catch (Exception e) {
 					            	 		//TODO interface exeption
 					            	 	}
 			                        }
 		            	 		});
-			            	 	
-			            	 	Platform.runLater(new Runnable() {
-			                        @Override public void run() {
-						                parentController.addRemote(rmt);
-			                        	dialogue.close();
-						                Node source = (Node)  threadEvent.getSource();
-						                Stage stage  = (Stage) source.getScene().getWindow();
-						                stage.close();
-			                        }
-			                    });
 				                
 			             }
 					}
