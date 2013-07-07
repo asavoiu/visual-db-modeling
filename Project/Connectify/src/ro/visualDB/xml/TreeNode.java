@@ -137,11 +137,6 @@ public class TreeNode implements XMLElement, SQLElement {
 			c.print(indentation + 1);
 		}
 	}
-	
-	@Override
-	public String toString() {
-		return value.toString();
-	}
 
 	public Element getDomElement(Document doc) throws Exception {
 		Element el;

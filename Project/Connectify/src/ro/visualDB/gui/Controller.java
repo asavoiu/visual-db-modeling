@@ -15,6 +15,7 @@ import ro.visualDB.api.Api;
 import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.model.Column;
 import ro.visualDB.sql.query.SQLEngine;
+import ro.visualDB.versioning.Version;
 import ro.visualDB.xml.TreeNode;
 
 import java.io.File;
@@ -107,14 +108,57 @@ public class Controller {
         dialogue.show();
     }
 
-    @FXML protected void openVersioningWindow(ActionEvent event) throws IOException {
+    public ArrayList<Version> loadVersions() {
+    	ArrayList<Version> versions = new ArrayList<Version>();
+    	final String versioningDirector = "C:\\Users\\Auras\\Desktop\\versioning";
+		File dir = new File(versioningDirector);
+		if (!dir.isDirectory()) {
+			return versions;
+		}
+		for (File file : dir.listFiles()) {
+			if (file.isDirectory() ||
+					!file.getName().endsWith(".xml")) {
+				continue;
+			}
+			try {
+				Remote remote = (Remote) Api.importFromXML(file.getAbsolutePath());
+				Version version = new Version();
+				version.setRemote(remote);
+				version.setVersion(file.getName().substring(0, file.getName().length() - 4));
+				versions.add(version);
+			} catch (Exception e) {
+				//TODO maybe do something here ?
+				e.printStackTrace();
+			}
+		}
+		return versions;
+	}
+    
+    @FXML 
+    protected void openVersioningWindow(ActionEvent event) throws IOException {
+    	if (remotes.size() == 0) {
+    		return;
+    	}
         Stage dialogue = new Stage();
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader();
-        root = FXMLLoader.load(getClass().getResource("Dialogues/Versioning.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/Versioning.fxml"));
+        root = (Parent)loader.load();
+        
+        // set data on the controller
+        VersioningController controller = loader.<VersioningController>getController();
+        controller.setRemote(remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null);
+        controller.setParentController(this);
+        ArrayList<Version> versions = loadVersions();
+        controller.setVersions(versions);
+        TreeItem rootItem = new TreeItem("Versions");
+        for (Version vers : versions) {
+        	TreeItem versItem = new TreeItem(vers);
+        	rootItem.getChildren().add(versItem);
+        }
+        controller.treeViewRemote.setRoot(rootItem);
         Scene scene = new Scene(root);
-
+        
         dialogue.setTitle("Versioning System");
         dialogue.setScene(scene);
         dialogue.show();
