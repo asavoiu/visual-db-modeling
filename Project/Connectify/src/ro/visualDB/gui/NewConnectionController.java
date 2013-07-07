@@ -131,12 +131,13 @@ public class NewConnectionController {
 			            	 			try {
 				                        	parentController.addRemote(rmt);
 				                        	parentController.printTreeInTreeView(threadEvent);
-				                        	dialogue.close();
+			            	 			} catch (Exception e) {
+					            	 		//TODO interface exeption
+					            	 	} finally {
+					            	 		dialogue.close();
 							                Node source = (Node)  threadEvent.getSource();
 							                Stage stage  = (Stage) source.getScene().getWindow();
 							                stage.close();
-			            	 			} catch (Exception e) {
-					            	 		//TODO interface exeption
 					            	 	}
 			                        }
 		            	 		});
