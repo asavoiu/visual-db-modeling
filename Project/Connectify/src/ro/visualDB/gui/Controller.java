@@ -1,34 +1,14 @@
 package ro.visualDB.gui;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -38,7 +18,14 @@ import ro.visualDB.sql.model.Column;
 import ro.visualDB.versioning.Version;
 import ro.visualDB.xml.TreeNode;
 
-import com.sun.javafx.collections.ObservableListWrapper;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
 	ArrayList<Remote> remotes = new ArrayList<Remote>();
@@ -78,7 +65,7 @@ public class Controller {
         root = (Parent)loader.load();
         Scene scene = new Scene(root);
         
-        // set data on the controller
+        // set data on the parentController
         NewConnectionController controller = loader.<NewConnectionController>getController();
         controller.setParentController(this);
         controller.getHostName().setText("ec2-23-21-161-153.compute-1.amazonaws.com");
@@ -123,7 +110,7 @@ public class Controller {
         root = (Parent)loader.load();
         Scene scene = new Scene(root);
 
-        // set data on the controller
+        // set data on the parentController
         ExportScriptController controller = loader.<ExportScriptController>getController();
         controller.setRemote(remotes.size() > 0 ? remotes.get(0) : null);
         	  
@@ -171,7 +158,7 @@ public class Controller {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/Versioning.fxml"));
         root = (Parent)loader.load();
         
-        // set data on the controller
+        // set data on the parentController
         VersioningController controller = loader.<VersioningController>getController();
         controller.setRemote(remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null);
         controller.setParentController(this);
@@ -275,25 +262,47 @@ public class Controller {
 
         final ContextMenu cm = new ContextMenu();
     	MenuItem cmItem1 = new MenuItem("Add Column");
+        final Controller newController = this;
     	cmItem1.setOnAction(new EventHandler<ActionEvent>() {
-    	    public void handle(ActionEvent e) {
-    	        System.out.println("TODO");
-    	    }
-    	});
+            public void handle(ActionEvent e) {
+                Stage dialogue = new Stage();
+                Parent root = null;
+
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/newColumn.fxml"));
+                try {
+                    root = (Parent)loader.load();
+                } catch (IOException e1) {
+                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    return;
+                }
+
+                NewColumnController newColumnController = loader.<NewColumnController>getController();
+
+                newColumnController.setParentController(newController);
+
+
+                Scene scene = new Scene(root);
+
+                dialogue.setTitle("Users Management System");
+                dialogue.setScene(scene);
+                dialogue.show();
+            }
+        });
 
     	cm.getItems().add(cmItem1);
     	
         treeViewRemote.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-        	@Override
+            @Override
             public void handle(MouseEvent event) {
-        		cm.hide();
-        		if (event.getButton() == MouseButton.SECONDARY) {
-	        		TreeItem item = treeViewRemote.getSelectionModel().getSelectedItem();
-	        		Object value = item.getValue();
-	        		if (value instanceof Column) {
-	                	cm.show(treeViewRemote, event.getScreenX(), event.getScreenY());
-	                }
-        		}
+                cm.hide();
+                if (event.getButton() == MouseButton.SECONDARY) {
+                    TreeItem item = treeViewRemote.getSelectionModel().getSelectedItem();
+                    Object value = item.getValue();
+                    if (value instanceof Column) {
+                        cm.show(treeViewRemote, event.getScreenX(), event.getScreenY());
+                    }
+                }
             }
         });
         
@@ -329,7 +338,7 @@ public class Controller {
         //database name - root
         ArrayList<TreeNode> databaseName = myTree.getChildren();
         TreeItem<String> dbName = new TreeItem<String>("Database: " + String.valueOf(databaseName).replace("[","").replace("]",""));
-        tabRemote.setText(String.valueOf(databaseName).replace("[","").replace("]",""));
+        tabRemote.setText(String.valueOf(databaseName).replace("[", "").replace("]", ""));
         dbName.setExpanded(true);
 
         //schema name

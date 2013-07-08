@@ -8,28 +8,28 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="251.0" prefWidth="324.0" xmlns:fx="http://javafx.com/fxml">
-  <children>
-    <Text layoutX="35.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Column Name:" />
-    <Text layoutX="35.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Column Type:" />
-    <Text layoutX="35.0" layoutY="99.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is Nullable" />
-    <Text layoutX="35.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Data Type" />
-    <Text layoutX="35.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Minimum Length" />
-    <Text layoutX="35.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Maximum Length" />
-    <TextField fx:id="columnName" layoutX="142.0" layoutY="26.0" prefHeight="16.0" prefWidth="166.0" />
-    <TextField fx:id="columnType" layoutX="142.0" layoutY="54.0" prefHeight="16.0" prefWidth="166.0" />
-    <TextField fx:id="isNullable" layoutX="142.0" layoutY="83.0" prefHeight="16.0" prefWidth="166.0" />
-    <TextField fx:id="minimumLength" layoutX="142.0" layoutY="148.0" prefHeight="16.0" prefWidth="166.0" />
-    <TextField fx:id="maximumLength" layoutX="142.0" layoutY="180.0" prefHeight="16.0" prefWidth="166.0" />
-    <ComboBox fx:id="dataTypeCombo" layoutX="142.0" layoutY="113.0" prefHeight="21.0" prefWidth="166.0">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Item 1" />
-          <String fx:value="Item 2" />
-          <String fx:value="Item 3" />
-        </FXCollections>
-      </items>
-    </ComboBox>
-    <Button fx:id="okButton" layoutX="272.0" layoutY="216.0" mnemonicParsing="false" text="Ok" />
-  </children>
-</AnchorPane>
+<GridPane alignment="CENTER" hgap="10.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="ro.visualDB.gui.NewColumnController">
+  <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="251.0" prefWidth="324.0">
+    <children>
+      <Text layoutX="35.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Column Name:" />
+      <Text layoutX="35.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is Nullable" />
+      <Text layoutX="35.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Data Type" />
+      <Text layoutX="35.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Minimum Length" />
+      <Text layoutX="35.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Maximum Length" />
+      <TextField fx:id="columnName" layoutX="142.0" layoutY="26.0" prefHeight="16.0" prefWidth="166.0" />
+      <TextField fx:id="minimumLength" layoutX="142.0" layoutY="119.0" prefHeight="16.0" prefWidth="166.0" />
+      <TextField fx:id="maximumLength" layoutX="142.0" layoutY="151.0" prefHeight="16.0" prefWidth="166.0" />
+      <ComboBox fx:id="dataTypeCombo" layoutX="142.0" layoutY="84.0" prefHeight="21.0" prefWidth="166.0">
+        <items>
+          <FXCollections fx:factory="observableArrayList">
+            <String fx:value="Varchar" />
+            <String fx:value="Integer" />
+            <String fx:value="Timestamp" />
+          </FXCollections>
+        </items>
+      </ComboBox>
+      <Button fx:id="okButton" layoutX="272.0" layoutY="216.0" mnemonicParsing="false" text="Ok" />
+      <CheckBox id="isNUllable" fx:id="isNullabe" layoutX="142.0" layoutY="57.0" mnemonicParsing="false" />
+    </children>
+  </AnchorPane>
+</GridPane>
