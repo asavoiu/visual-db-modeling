@@ -42,9 +42,10 @@ public class Test {
 			rmt3.setSsl(true);
 			rmt3.setDatabaseEngine(SQLEngine.MYSQL);
 			
-			Api.importFromRemote(rmt2);
-			Api.importFromRemote(rmt3);
-			System.out.println(Api.getCreateSQLScriptsOfTreeNodeAndChildren(rmt3, SQLEngine.POSTGRES));
+			//Api.importFromRemote(rmt2);
+			//Api.importFromRemote(rmt3);
+			Remote remote = (Remote)Api.importFromXML("C:\\Users\\Auras\\Desktop\\muie.xml");
+			System.out.println(Api.getCreateSQLScriptsOfTreeNodeAndChildren(remote, SQLEngine.POSTGRES));
 
 			/*Table t = Api.findTable(rmt2, "dbtooekfdenm82", "dbtooekfdenm82", "planets");
 			Table t2 = Api.findTable(rmt3, "def", "sql313131", "furnizori");

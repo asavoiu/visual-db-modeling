@@ -1,22 +1,5 @@
 package ro.visualDB.gui;
 
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.*;
-import javafx.scene.shape.Line;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import ro.visualDB.api.Api;
-import ro.visualDB.remotes.Remote;
-import ro.visualDB.sql.model.Column;
-import ro.visualDB.xml.TreeNode;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -25,6 +8,37 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.shape.Line;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import ro.visualDB.api.Api;
+import ro.visualDB.remotes.Remote;
+import ro.visualDB.sql.model.Column;
+import ro.visualDB.versioning.Version;
+import ro.visualDB.xml.TreeNode;
+
+import com.sun.javafx.collections.ObservableListWrapper;
+
+import com.sun.javafx.collections.ObservableListWrapper;
 
 public class Controller {
 	ArrayList<Remote> remotes = new ArrayList<Remote>();
@@ -120,13 +134,57 @@ public class Controller {
         dialogue.show();
     }
 
-    @FXML protected void openVersioningWindow(ActionEvent event) throws IOException {
+    public ArrayList<Version> loadVersions() {
+    	String dirName = "C:\\versioning";
+    	ArrayList<Version> versions = new ArrayList<Version>();
+    	File dir = new File(dirName);
+    	if (!dir.isDirectory()) {
+    		return versions;
+    	}
+    	
+    	for (File f : dir.listFiles()) {
+    		if (f.isDirectory()) {
+    			continue;
+    		}
+    		if (!f.getAbsolutePath().endsWith(".xml")) {
+    			continue;
+    		}
+    		try {
+	    		Version vers = new Version();
+	    		vers.setVersion(f.getName().substring(0, f.getName().length() - 4));
+	    		vers.setRemote((Remote)Api.importFromXML(f.getAbsolutePath()));
+	    		versions.add(vers);
+    		} catch (Exception e) {
+    			// TODO show message
+    			e.printStackTrace();
+    		}
+    	}
+    	return versions;
+    }
+    
+    @FXML
+    protected void openVersioningWindow(ActionEvent event) throws IOException {
         Stage dialogue = new Stage();
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader();
-        root = FXMLLoader.load(getClass().getResource("Dialogues/Versioning.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/Versioning.fxml"));
+        root = (Parent)loader.load();
+        
+        // set data on the controller
+        VersioningController controller = loader.<VersioningController>getController();
+        controller.setRemote(remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null);
+        controller.setParentController(this);
+        ArrayList<Version> versions = loadVersions();
+        controller.setVersions(versions);
+        
+        TreeItem rootItem = new TreeItem("No difference");
+        controller.treeViewRemote.setRoot(rootItem);
         Scene scene = new Scene(root);
+        
+        //set the versions in the checkBoxes
+        ObservableListWrapper<Version> versionItems = new ObservableListWrapper<Version>(versions);
+        controller.sourceVersionCb.setItems(versionItems);
+        controller.destinationVersionCb.setItems(versionItems);
 
         dialogue.setTitle("Versioning System");
         dialogue.setScene(scene);

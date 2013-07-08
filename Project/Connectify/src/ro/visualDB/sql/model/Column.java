@@ -269,4 +269,9 @@ public class Column extends TreeNode {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String toString() {
+		return columnName;
+	}
 }
