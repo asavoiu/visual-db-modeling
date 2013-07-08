@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -25,6 +26,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.shape.Line;
@@ -35,8 +37,6 @@ import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.model.Column;
 import ro.visualDB.versioning.Version;
 import ro.visualDB.xml.TreeNode;
-
-import com.sun.javafx.collections.ObservableListWrapper;
 
 import com.sun.javafx.collections.ObservableListWrapper;
 
@@ -67,8 +67,6 @@ public class Controller {
     private int tablesNr=0;
     private int columnsNo=0;
     private int constraintsNo=0;
-
-    @FXML private MenuItem myMenuItem;
 
     @FXML protected void handleSubmitButtonAction(ActionEvent event) throws IOException {
 //        actiontarget.setText("Sign in button pressed");
@@ -164,6 +162,9 @@ public class Controller {
     
     @FXML
     protected void openVersioningWindow(ActionEvent event) throws IOException {
+    	if (remotes.size() == 0) {
+    		return;
+    	}
         Stage dialogue = new Stage();
         Parent root = null;
 
@@ -267,10 +268,35 @@ public class Controller {
     @FXML public void printTreeInTreeView(ActionEvent event) throws Exception {
 
         TreeNode myTree = remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null;
+        
         if (myTree == null) {
         	return;
         }
 
+        final ContextMenu cm = new ContextMenu();
+    	MenuItem cmItem1 = new MenuItem("Add Column");
+    	cmItem1.setOnAction(new EventHandler<ActionEvent>() {
+    	    public void handle(ActionEvent e) {
+    	        System.out.println("TODO");
+    	    }
+    	});
+
+    	cm.getItems().add(cmItem1);
+    	
+        treeViewRemote.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+        	@Override
+            public void handle(MouseEvent event) {
+        		cm.hide();
+        		if (event.getButton() == MouseButton.SECONDARY) {
+	        		TreeItem item = treeViewRemote.getSelectionModel().getSelectedItem();
+	        		Object value = item.getValue();
+	        		if (value instanceof Column) {
+	                	cm.show(treeViewRemote, event.getScreenX(), event.getScreenY());
+	                }
+        		}
+            }
+        });
+        
         table1.setVisible(false);
         table2.setVisible(false);
         table3.setVisible(false);
@@ -328,7 +354,11 @@ public class Controller {
         String columns="";
         for(int j=0; j<children.size(); j++){
             columnsNo++;
-            tableName.getChildren().add(new TreeItem<String>(((Column)children.get(j)).getColumnName()+""));
+            TreeItem itemCol = new TreeItem((Column)children.get(j));
+            tableName.getChildren().add(itemCol);
+            
+			
+            
             columns += ((Column)children.get(j)).getColumnName() + "\n";
 
 
@@ -430,13 +460,13 @@ public class Controller {
               }
           }
 
-            myMenuItem.setText("Add column");
-            myMenuItem.setOnAction(new EventHandler() {
-                public void handle(Event t) {
+            //myMenuItem.setText("Add column");
+            //myMenuItem.setOnAction(new EventHandler() {
+              //  public void handle(Event t) {
 //                    TreeItem newEmployee = new TreeItem<String>("New Employee");
 //                    getTreeItem().getChildren().add(newEmployee);
-                }
-            });
+                //}
+            //});
 
           treeViewRemote.setRoot(dbName);
 
