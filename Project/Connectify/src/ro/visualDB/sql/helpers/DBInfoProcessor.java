@@ -1,18 +1,17 @@
 package ro.visualDB.sql.helpers;
 
+import ro.visualDB.remotes.Remote;
+import ro.visualDB.sql.connection.IDatabaseConnection;
+import ro.visualDB.sql.model.*;
+import ro.visualDB.sql.query.SQLEngine;
+import ro.visualDB.xml.TreeNode;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import ro.visualDB.remotes.Remote;
-import ro.visualDB.sql.connection.IDatabaseConnection;
-import ro.visualDB.sql.model.Catalog;
-import ro.visualDB.sql.model.Column;
-import ro.visualDB.sql.model.Constraint;
-import ro.visualDB.sql.model.Schema;
-import ro.visualDB.sql.model.Table;
-import ro.visualDB.sql.query.SQLEngine;
-import ro.visualDB.xml.TreeNode;
 
 
 public class DBInfoProcessor {
@@ -24,10 +23,15 @@ public class DBInfoProcessor {
 		databaseConnection = remote.getConnection();
 	}
 
-	
-	
-	public TreeNode buildTreeForRemote() throws SQLException{
+
+
+	public TreeNode buildTreeForRemote() throws SQLException, IOException {
 		buildTree();
+        if (remote.getDatabaseEngine() == SQLEngine.POSTGRES){
+            getMyUsersFromPostgreSQL();
+        }else if (remote.getDatabaseEngine() == SQLEngine.MYSQL){
+            getMyUsersFromMySQL();
+        }
 		return remote;
 	}
 	
@@ -39,7 +43,7 @@ public class DBInfoProcessor {
 	public void buildTree() throws SQLException {
 		Statement st = null;
 		ResultSet rs = null;
-		// badass query
+		// badass query        L.E. =))))))))))))))
 		// don't touch without asking, it might break
 		String sql = " SELECT information_schema.schemata.catalog_name as catalog_name, " +
 				" information_schema.schemata.schema_name as schema_name, ";
@@ -187,4 +191,56 @@ public class DBInfoProcessor {
 			}
 		}
 	}
+
+    private void getMyUsersFromPostgreSQL() throws SQLException {
+
+        Statement st = null;
+        ResultSet rs = null;
+
+        String sqlGetUsers = "select usename from pg_catalog.pg_user Limit 10";
+
+        st = databaseConnection.getConnection().createStatement();
+        rs = st.executeQuery(sqlGetUsers);
+
+        try {
+            FileWriter fstream = new FileWriter("C:\\licenta\\postgresql.txt");
+
+            BufferedWriter out = new BufferedWriter(fstream);
+
+            while (rs.next()) {
+                out.write(rs.getString("usename")+"\n");
+            }
+            out.close();
+
+        } catch (IOException e) {
+            System.out.println("crapaaaaa - nu atinge!");
+        }
+    }
+
+    private void getMyUsersFromMySQL() throws SQLException {
+
+        Statement st = null;
+        ResultSet rs = null;
+
+        String sqlGetUsers = "select grantee from information_schema.user_privileges group by grantee Limit 10";
+
+        st = databaseConnection.getConnection().createStatement();
+        rs = st.executeQuery(sqlGetUsers);
+
+        try {
+            FileWriter fstream = new FileWriter("C:\\licenta\\mysql.txt");
+
+            BufferedWriter out = new BufferedWriter(fstream);
+
+            while (rs.next()) {
+                out.write(rs.getString("grantee")+"\n");
+            }
+            out.close();
+
+        } catch (IOException e) {
+            System.out.println("crapaaaaa - nu atinge!");
+        }
+
+    }
 }
+

@@ -10,35 +10,25 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane fx:controller="ro.visualDB.gui.StatisticsController"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml">
-  <children>
-    <Separator prefHeight="9.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
-    <AreaChart id="AreaChart" layoutX="150.0" layoutY="100.0">
-      <xAxis>
-        <CategoryAxis side="BOTTOM">
-          <categories>
-            <FXCollections fx:factory="observableArrayList" />
-          </categories>
-        </CategoryAxis>
-      </xAxis>
-      <yAxis>
-        <NumberAxis side="LEFT" />
-      </yAxis>
-    </AreaChart>
-    <Label layoutX="81.0" layoutY="27.0" text="Database tables number">
-      <font>
-        <Font size="20.0" />
-      </font>
-    </Label>
-    <ImageView id="statistics.png" fitHeight="75.0" fitWidth="68.0">
-      <image>
-        <Image url="@../icons/statistics.png" preserveRatio="true" smooth="true" />
-      </image>
-    </ImageView>
-  </children>
-</AnchorPane>
-
+<GridPane alignment="CENTER" hgap="10.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="ro.visualDB.gui.StatisticsController">
+  <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="407.0">
+    <children>
+      <Separator prefHeight="9.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
+      <Label layoutX="81.0" layoutY="27.0" text="Database tables number">
+        <font>
+          <Font size="20.0" />
+        </font>
+      </Label>
+      <ImageView id="statistics.png" fitHeight="75.0" fitWidth="68.0">
+        <image>
+          <Image url="@../icons/statistics.png" preserveRatio="true" smooth="true" />
+        </image>
+      </ImageView>
+      <Text fx:id="statisticsInput" layoutX="154.0" layoutY="170.0" scaleX="7.550202929239457" scaleY="5.197748409202154" strokeType="OUTSIDE" strokeWidth="0.0">
+        <font>
+          <Font size="5.0" />
+        </font>
+      </Text>
+    </children>
+  </AnchorPane>
 </GridPane>

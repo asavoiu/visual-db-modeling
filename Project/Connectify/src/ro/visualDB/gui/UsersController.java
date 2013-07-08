@@ -1,5 +1,8 @@
 package ro.visualDB.gui;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Bogdan
@@ -8,4 +11,15 @@ package ro.visualDB.gui;
  * To change this template use File | Settings | File Templates.
  */
 public class UsersController {
+
+    @FXML
+    TextArea textUsersList;
+
+    String usersListText = "";
+
+    public void setUsersList(String usersList) {
+        this.usersListText = usersList;
+
+        textUsersList.setText(usersList.toString());
+    }
 }

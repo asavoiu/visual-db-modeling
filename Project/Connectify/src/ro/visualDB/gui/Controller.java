@@ -1,6 +1,7 @@
 package ro.visualDB.gui;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,11 +15,11 @@ import javafx.stage.Stage;
 import ro.visualDB.api.Api;
 import ro.visualDB.remotes.Remote;
 import ro.visualDB.sql.model.Column;
-import ro.visualDB.sql.query.SQLEngine;
-import ro.visualDB.versioning.Version;
 import ro.visualDB.xml.TreeNode;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,6 +50,12 @@ public class Controller {
 
     @FXML private Line line1;
 
+    private int tablesNr=0;
+    private int columnsNo=0;
+    private int constraintsNo=0;
+
+    @FXML private MenuItem myMenuItem;
+
     @FXML protected void handleSubmitButtonAction(ActionEvent event) throws IOException {
 //        actiontarget.setText("Sign in button pressed");
 
@@ -75,7 +82,7 @@ public class Controller {
         dialogue.show();
     }
 
-    @FXML protected void openRemote(ActionEvent event){
+    @FXML protected void openRemote(ActionEvent event) throws Exception {
         File file;
         FileChooser fileChooser = new FileChooser();
 
@@ -87,6 +94,11 @@ public class Controller {
         //Show open file dialog
         file = fileChooser.showOpenDialog(null);
 
+        Remote myImportedSchema = (Remote)(Api.importFromXML(file.getAbsolutePath()));
+
+        addRemote(myImportedSchema);
+
+        printTreeInTreeView(event);
 //        labelFile.setText(file.getPath());
 
     }
@@ -101,64 +113,21 @@ public class Controller {
 
         // set data on the controller
         ExportScriptController controller = loader.<ExportScriptController>getController();
-        controller.setRemote(remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null);
+        controller.setRemote(remotes.size() > 0 ? remotes.get(0) : null);
         	  
         dialogue.setTitle("Export Script");
         dialogue.setScene(scene);
         dialogue.show();
     }
 
-    public ArrayList<Version> loadVersions() {
-    	ArrayList<Version> versions = new ArrayList<Version>();
-    	final String versioningDirector = "C:\\Users\\Auras\\Desktop\\versioning";
-		File dir = new File(versioningDirector);
-		if (!dir.isDirectory()) {
-			return versions;
-		}
-		for (File file : dir.listFiles()) {
-			if (file.isDirectory() ||
-					!file.getName().endsWith(".xml")) {
-				continue;
-			}
-			try {
-				Remote remote = (Remote) Api.importFromXML(file.getAbsolutePath());
-				Version version = new Version();
-				version.setRemote(remote);
-				version.setVersion(file.getName().substring(0, file.getName().length() - 4));
-				versions.add(version);
-			} catch (Exception e) {
-				//TODO maybe do something here ?
-				e.printStackTrace();
-			}
-		}
-		return versions;
-	}
-    
-    @FXML 
-    protected void openVersioningWindow(ActionEvent event) throws IOException {
-    	if (remotes.size() == 0) {
-    		return;
-    	}
+    @FXML protected void openVersioningWindow(ActionEvent event) throws IOException {
         Stage dialogue = new Stage();
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/Versioning.fxml"));
-        root = (Parent)loader.load();
-        
-        // set data on the controller
-        VersioningController controller = loader.<VersioningController>getController();
-        controller.setRemote(remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null);
-        controller.setParentController(this);
-        ArrayList<Version> versions = loadVersions();
-        controller.setVersions(versions);
-        TreeItem rootItem = new TreeItem("Versions");
-        for (Version vers : versions) {
-        	TreeItem versItem = new TreeItem(vers);
-        	rootItem.getChildren().add(versItem);
-        }
-        controller.treeViewRemote.setRoot(rootItem);
+        FXMLLoader loader = new FXMLLoader();
+        root = FXMLLoader.load(getClass().getResource("Dialogues/Versioning.fxml"));
         Scene scene = new Scene(root);
-        
+
         dialogue.setTitle("Versioning System");
         dialogue.setScene(scene);
         dialogue.show();
@@ -168,8 +137,29 @@ public class Controller {
         Stage dialogue = new Stage();
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader();
-        root = FXMLLoader.load(getClass().getResource("Dialogues/Users.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/Users.fxml"));
+        root = (Parent)loader.load();
+
+        UsersController usersController = loader.<UsersController>getController();
+
+        String usersLists="";
+
+        try {
+            FileReader fstream = new FileReader("C:\\licenta\\postgresql.txt");
+
+            BufferedReader in = new BufferedReader(fstream);
+
+            String s;
+            while((s = in.readLine()) != null){
+                usersLists +="\t"+ s + "\n";
+            }
+
+        } catch (IOException e) {
+            System.out.println("crapaaaaa - nu atinge!");
+        }
+
+        usersController.setUsersList(usersLists);
+
         Scene scene = new Scene(root);
 
         dialogue.setTitle("Users Management System");
@@ -181,8 +171,15 @@ public class Controller {
         Stage dialogue = new Stage();
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader();
-        root = FXMLLoader.load(getClass().getResource("Dialogues/Statistics.fxml"));
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/Statistics.fxml"));
+        root = (Parent)loader.load();
+
+        StatisticsController statisticsController = loader.<StatisticsController>getController();
+
+        statisticsController.populatePieChart(tablesNr,columnsNo,constraintsNo);
+
+
         Scene scene = new Scene(root);
 
         dialogue.setTitle("Users Management System");
@@ -264,17 +261,21 @@ public class Controller {
         for(int i=0; i<tables.size(); i++){
 
         if(!tables.get(i).toString().contains("_pkey")){
-        tablesNo++;
+            tablesNr++;
+            tablesNo++;
         TreeItem<String> tableName = new TreeItem<String>("Table: " + tables.get(i).toString());
 
         ArrayList<TreeNode> children = tables.get(i).getChildren();
 
         String columns="";
         for(int j=0; j<children.size(); j++){
+            columnsNo++;
             tableName.getChildren().add(new TreeItem<String>(((Column)children.get(j)).getColumnName()+""));
             columns += ((Column)children.get(j)).getColumnName() + "\n";
 
+
             if(((Column)children.get(j)).getConstraint()!=null){
+                constraintsNo++;
 //                System.out.println(((Column)children.get(j)).getColumnName() + " from table " + ((Column)children.get(j)).getTableName() +
 //                    " to " + ((Column)children.get(j)).getConstraint().getTableName()
 //                );
@@ -370,6 +371,15 @@ public class Controller {
                   }
               }
           }
+
+            myMenuItem.setText("Add column");
+            myMenuItem.setOnAction(new EventHandler() {
+                public void handle(Event t) {
+//                    TreeItem newEmployee = new TreeItem<String>("New Employee");
+//                    getTreeItem().getChildren().add(newEmployee);
+                }
+            });
+
           treeViewRemote.setRoot(dbName);
 
           //Call draggable method
@@ -445,7 +455,8 @@ public class Controller {
     private void printLines(String initialTable, String initialColumn, String endTable, String endColumn) {
         if(linesNo==1){
             line1.setVisible(true);
-            System.out.println(tableNames + "\tcaut "+ initialTable + " in " + tableNames.indexOf("games") + " "+tableNames.get(0));
+//            System.out.println(tableNames + "\tcaut "+ initialTable + " in " + tableNames.indexOf("games") + " "+tableNames.get(0));
+
 //            line1.setStartX();
 //            line1.setStartY();
         }
