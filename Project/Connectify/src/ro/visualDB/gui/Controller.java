@@ -1,5 +1,25 @@
 package ro.visualDB.gui;
 
+import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
+import javafx.scene.shape.Line;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import ro.visualDB.api.Api;
+import ro.visualDB.remotes.Remote;
+import ro.visualDB.sql.model.Column;
+import ro.visualDB.sql.model.Schema;
+import ro.visualDB.sql.model.Table;
+import ro.visualDB.versioning.Version;
+import ro.visualDB.xml.TreeNode;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,37 +28,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
-import javafx.scene.shape.Line;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import ro.visualDB.api.Api;
-import ro.visualDB.remotes.Remote;
-import ro.visualDB.sql.model.Column;
-import ro.visualDB.sql.model.Table;
-import ro.visualDB.versioning.Version;
-import ro.visualDB.xml.TreeNode;
-
-import com.sun.javafx.collections.ObservableListWrapper;
 
 public class Controller {
 	ArrayList<Remote> remotes = new ArrayList<Remote>();
@@ -360,13 +349,22 @@ public class Controller {
 
         //schema name
         ArrayList<TreeNode> schemas = databases.get(0).getChildren();
-        TreeItem schName = new TreeItem(schemas.get(0));
+
+        TreeItem schName = null;
+        ArrayList<TreeNode> tables = null;
+
+        if(((Schema)schemas.get(0)).getSchemaName().equalsIgnoreCase("INFORMATION_SCHEMA")){
+            schName = new TreeItem(schemas.get(1));
+            tables = schemas.get(1).getChildren();
+        }else{
+            schName = new TreeItem(schemas.get(0));
+            tables = schemas.get(0).getChildren();
+        }
         schName.setExpanded(true);
         dbName.getChildren().add(schName);
 
         //table names
         int tablesNo=0;
-        ArrayList<TreeNode> tables = schemas.get(0).getChildren();
 
         for(int i=0; i<tables.size(); i++){
 
@@ -383,26 +381,25 @@ public class Controller {
             TreeItem itemCol = new TreeItem((Column)children.get(j));
             tableName.getChildren().add(itemCol);
             
-			
-            
             columns += ((Column)children.get(j)).getColumnName() + "\n";
 
 
-            /*if(((Column)children.get(j)).getConstraint()!=null){
+            if(((Column)children.get(j)).getConstraint()!=null){
                 constraintsNo++;
+            }
 //                System.out.println(((Column)children.get(j)).getColumnName() + " from table " + ((Column)children.get(j)).getTableName() +
 //                    " to " + ((Column)children.get(j)).getConstraint().getTableName()
 //                );
 
                 //printLines(tables.get(i).toString()+"", ((Column)children.get(j)).getColumnName(), ((Column)children.get(j)).getConstraint().getTableName(), ((Column)children.get(j)).getConstraint().getColumnName());
 
-                line1.setStartX(table2.getLayoutX());
-                line1.setStartY(table2.getLayoutY());
-                line1.setEndX(table1.getLayoutX());
-                line1.setEndY(table1.getLayoutY());
-
-                line1.toBack();
-            }*/
+//                line1.setStartX(table2.getLayoutX());
+//                line1.setStartY(table2.getLayoutY());
+//                line1.setEndX(table1.getLayoutX());
+//                line1.setEndY(table1.getLayoutY());
+//
+//                line1.toBack();
+//            }*/
 
             //Test lines
 //            line1.setVisible(true);
