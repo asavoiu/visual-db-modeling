@@ -1,23 +1,5 @@
 package ro.visualDB.gui;
 
-import com.sun.javafx.collections.ObservableListWrapper;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.*;
-import javafx.scene.shape.Line;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import ro.visualDB.api.Api;
-import ro.visualDB.remotes.Remote;
-import ro.visualDB.sql.model.Column;
-import ro.visualDB.versioning.Version;
-import ro.visualDB.xml.TreeNode;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -26,6 +8,37 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.shape.Line;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import ro.visualDB.api.Api;
+import ro.visualDB.remotes.Remote;
+import ro.visualDB.sql.model.Column;
+import ro.visualDB.sql.model.Table;
+import ro.visualDB.versioning.Version;
+import ro.visualDB.xml.TreeNode;
+
+import com.sun.javafx.collections.ObservableListWrapper;
 
 public class Controller {
 	ArrayList<Remote> remotes = new ArrayList<Remote>();
@@ -55,9 +68,8 @@ public class Controller {
     private int columnsNo=0;
     private int constraintsNo=0;
 
-    @FXML protected void handleSubmitButtonAction(ActionEvent event) throws IOException {
-//        actiontarget.setText("Sign in button pressed");
-
+    @FXML
+    protected void handleSubmitButtonAction(ActionEvent event) throws IOException {
         Stage dialogue = new Stage();
         Parent root = null;
 
@@ -81,7 +93,8 @@ public class Controller {
         dialogue.show();
     }
 
-    @FXML protected void openRemote(ActionEvent event) throws Exception {
+    @FXML 
+    protected void openRemote(ActionEvent event) throws Exception {
         File file;
         FileChooser fileChooser = new FileChooser();
 
@@ -98,11 +111,10 @@ public class Controller {
         addRemote(myImportedSchema);
 
         printTreeInTreeView(event);
-//        labelFile.setText(file.getPath());
-
     }
 
-    @FXML protected void openExportWindow(ActionEvent event) throws IOException {
+    @FXML 
+    protected void openExportWindow(ActionEvent event) throws IOException {
         Stage dialogue = new Stage();
         Parent root = null;
 
@@ -112,7 +124,7 @@ public class Controller {
 
         // set data on the parentController
         ExportScriptController controller = loader.<ExportScriptController>getController();
-        controller.setRemote(remotes.size() > 0 ? remotes.get(0) : null);
+        controller.setRemote(remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null);
         	  
         dialogue.setTitle("Export Script");
         dialogue.setScene(scene);
@@ -179,7 +191,8 @@ public class Controller {
         dialogue.show();
     }
 
-    @FXML protected void openUsersWindow(ActionEvent event) throws IOException {
+    @FXML 
+    protected void openUsersWindow(ActionEvent event) throws IOException {
         Stage dialogue = new Stage();
         Parent root = null;
 
@@ -213,7 +226,8 @@ public class Controller {
         dialogue.show();
     }
 
-    @FXML protected void openStatisticsWindow(ActionEvent event) throws IOException {
+    @FXML 
+    protected void openStatisticsWindow(ActionEvent event) throws IOException {
         Stage dialogue = new Stage();
         Parent root = null;
 
@@ -233,11 +247,13 @@ public class Controller {
         dialogue.show();
     }
 
-    @FXML protected void openGitPage(ActionEvent event) throws URISyntaxException, IOException {
+    @FXML 
+    protected void openGitPage(ActionEvent event) throws URISyntaxException, IOException {
         java.awt.Desktop.getDesktop().browse(new URI("https://github.com/asavoiu/visual-db-modeling"));
     }
 
-    @FXML protected void openAboutPage(ActionEvent event) throws IOException {
+    @FXML 
+    protected void openAboutPage(ActionEvent event) throws IOException {
         Stage dialogue = new Stage();
         Parent root = null;
 
@@ -252,23 +268,24 @@ public class Controller {
 
     String test="";
 
-    @FXML public void printTreeInTreeView(ActionEvent event) throws Exception {
+    @FXML 
+    public void printTreeInTreeView(ActionEvent event) throws Exception {
 
-        TreeNode myTree = remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null;
+        Remote myTree = remotes.size() > 0 ? remotes.get(remotes.size() - 1) : null;
         
         if (myTree == null) {
         	return;
         }
 
         final ContextMenu cm = new ContextMenu();
-    	MenuItem cmItem1 = new MenuItem("Add Column");
+    	final MenuItem cmItem1 = new MenuItem("Add Column");
         final Controller newController = this;
+        
     	cmItem1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 Stage dialogue = new Stage();
                 Parent root = null;
-
-
+                
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Dialogues/newColumn.fxml"));
                 try {
                     root = (Parent)loader.load();
@@ -278,9 +295,8 @@ public class Controller {
                 }
 
                 NewColumnController newColumnController = loader.<NewColumnController>getController();
-
                 newColumnController.setParentController(newController);
-
+                newColumnController.setTable((Table)cmItem1.getUserData());
 
                 Scene scene = new Scene(root);
 
@@ -299,8 +315,9 @@ public class Controller {
                 if (event.getButton() == MouseButton.SECONDARY) {
                     TreeItem item = treeViewRemote.getSelectionModel().getSelectedItem();
                     Object value = item.getValue();
-                    if (value instanceof Column) {
+                    if (value instanceof Table) {
                         cm.show(treeViewRemote, event.getScreenX(), event.getScreenY());
+                        cmItem1.setUserData(value);
                     }
                 }
             }
@@ -336,27 +353,27 @@ public class Controller {
         table9.setMinWidth(150);
 
         //database name - root
-        ArrayList<TreeNode> databaseName = myTree.getChildren();
-        TreeItem<String> dbName = new TreeItem<String>("Database: " + String.valueOf(databaseName).replace("[","").replace("]",""));
-        tabRemote.setText(String.valueOf(databaseName).replace("[", "").replace("]", ""));
+        ArrayList<TreeNode> databases = myTree.getChildren();
+        TreeItem dbName = new TreeItem(databases.get(0));
+        tabRemote.setText(myTree.toString());
         dbName.setExpanded(true);
 
         //schema name
-        ArrayList<TreeNode> schemaName = databaseName.get(0).getChildren();
-        TreeItem<String> schName = new TreeItem<String>("Schema: " + String.valueOf(schemaName).replace("[","").replace("]",""));
+        ArrayList<TreeNode> schemas = databases.get(0).getChildren();
+        TreeItem schName = new TreeItem(schemas.get(0));
         schName.setExpanded(true);
         dbName.getChildren().add(schName);
 
         //table names
         int tablesNo=0;
-        ArrayList<TreeNode> tables = schemaName.get(0).getChildren();
+        ArrayList<TreeNode> tables = schemas.get(0).getChildren();
 
         for(int i=0; i<tables.size(); i++){
 
         if(!tables.get(i).toString().contains("_pkey")){
             tablesNr++;
             tablesNo++;
-        TreeItem<String> tableName = new TreeItem<String>("Table: " + tables.get(i).toString());
+        TreeItem tableName = new TreeItem((Table)tables.get(i));
 
         ArrayList<TreeNode> children = tables.get(i).getChildren();
 
@@ -371,13 +388,13 @@ public class Controller {
             columns += ((Column)children.get(j)).getColumnName() + "\n";
 
 
-            if(((Column)children.get(j)).getConstraint()!=null){
+            /*if(((Column)children.get(j)).getConstraint()!=null){
                 constraintsNo++;
 //                System.out.println(((Column)children.get(j)).getColumnName() + " from table " + ((Column)children.get(j)).getTableName() +
 //                    " to " + ((Column)children.get(j)).getConstraint().getTableName()
 //                );
 
-                printLines(tables.get(i).toString()+"", ((Column)children.get(j)).getColumnName(), ((Column)children.get(j)).getConstraint().getTableName(), ((Column)children.get(j)).getConstraint().getColumnName());
+                //printLines(tables.get(i).toString()+"", ((Column)children.get(j)).getColumnName(), ((Column)children.get(j)).getConstraint().getTableName(), ((Column)children.get(j)).getConstraint().getColumnName());
 
                 line1.setStartX(table2.getLayoutX());
                 line1.setStartY(table2.getLayoutY());
@@ -385,11 +402,11 @@ public class Controller {
                 line1.setEndY(table1.getLayoutY());
 
                 line1.toBack();
-            }
+            }*/
 
             //Test lines
-            line1.setVisible(true);
-            line1.setStrokeWidth(2);
+//            line1.setVisible(true);
+//            line1.setStrokeWidth(2);
 //            line1.setStartX(0);
 //            line1.setStartY(0);
 //            line1.setEndX(1000);
@@ -469,14 +486,6 @@ public class Controller {
               }
           }
 
-            //myMenuItem.setText("Add column");
-            //myMenuItem.setOnAction(new EventHandler() {
-              //  public void handle(Event t) {
-//                    TreeItem newEmployee = new TreeItem<String>("New Employee");
-//                    getTreeItem().getChildren().add(newEmployee);
-                //}
-            //});
-
           treeViewRemote.setRoot(dbName);
 
           //Call draggable method
@@ -492,7 +501,6 @@ public class Controller {
         System.out.println(tableNames);
       }
 
-    //      */
     public void dragMyTables(final TitledPane tableToMove){
 
         final double[] x = {0};
@@ -520,10 +528,10 @@ public class Controller {
                 db.setContent(content);
                 mouseEvent.consume();
 
-                line1.setStartX(table2.getLayoutX());
-                line1.setStartY(table2.getLayoutY());
-                line1.setEndX(table1.getLayoutX());
-                line1.setEndY(table1.getLayoutY());
+//                line1.setStartX(table2.getLayoutX());
+//                line1.setStartY(table2.getLayoutY());
+//                line1.setEndX(table1.getLayoutX());
+//                line1.setEndY(table1.getLayoutY());
             }
         });
 
@@ -540,10 +548,10 @@ public class Controller {
                 mousex[0] = event.getSceneX();
                 mousey[0] = event.getSceneY();
                 event.consume();
-                line1.setStartX(table2.getLayoutX());
-                line1.setStartY(table2.getLayoutY());
-                line1.setEndX(table1.getLayoutX());
-                line1.setEndY(table1.getLayoutY());
+//                line1.setStartX(table2.getLayoutX());
+//                line1.setStartY(table2.getLayoutY());
+//                line1.setEndX(table1.getLayoutX());
+//                line1.setEndY(table1.getLayoutY());
             }
         });
 

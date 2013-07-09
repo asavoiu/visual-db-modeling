@@ -138,9 +138,16 @@ public class Remote extends TreeNode {
 				return null;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return host;
+	}
+	
 	public boolean isSsl() {
 		return ssl;
 	}
+	
 	public void setSsl(boolean ssl) {
 		this.ssl = ssl;
 	}
