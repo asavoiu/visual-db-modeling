@@ -477,7 +477,7 @@ public class Controller {
                               table9.setContent(new Label(columns));
                               table9.setMinWidth(160);
                               table9.setMinHeight(80);
-                              tableNames.add(9, tables.get(i).toString() + "");
+                              tableNames.add(tables.get(i).toString() + "");
                               break;
                   }
               }
